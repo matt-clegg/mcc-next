@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     "@nuxt/image"
   ],
 
+  components: [{
+    path: "~/components",
+    pathPrefix: false
+  }],
+
   devtools: { enabled: true },
 
   routeRules: {

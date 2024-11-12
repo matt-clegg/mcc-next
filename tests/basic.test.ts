@@ -1,8 +1,7 @@
 ﻿import { resolve } from "node:path";
 import { lstatSync, readdirSync } from "fs";
 import { join, relative } from "path";
-// @ts-expect-error Ignore missing types
-import { removeSync } from "fs-extra";
+import { promises as fs } from "node:fs";
 import { describe } from "vitest";
 import { setup } from "@nuxt/test-utils/e2e";
 import { toArray } from "@antfu/utils";
@@ -43,7 +42,7 @@ function* walkDir(
 
 describe("server", async () => {
   const resolved = resolve(process.cwd(), ".data", "test.db");
-  removeSync(resolved);
+  await fs.rm(resolved, { force: true, recursive: true });
 
   await setup();
 

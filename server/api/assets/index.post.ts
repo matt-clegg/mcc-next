@@ -1,9 +1,18 @@
 ﻿import path from "node:path";
 import { promises as fs } from "node:fs";
+import { z } from "zod";
+import { eq } from "drizzle-orm";
+import { canUploadToFolder } from "#shared/utils/abilities/folders";
+import { canUploadAsset } from "#shared/utils/abilities/assets";
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
 
+  await authorize(event, canUploadAsset);
+
+  const query = await getValidatedQuery(event, z.object({
+    folder: z.string().optional()
+  }).parse);
   const formData = await readMultipartFormData(event);
 
   if (!formData || formData.length === 0) {
@@ -13,34 +22,78 @@ export default eventHandler(async (event) => {
     });
   }
 
-  for (const item of formData) {
-    {
-      console.log("got type", item.type);
-      // if (item.type === "image/jpeg") {
-      const { filename, data } = item;
-      const uploadDir = path.join(process.cwd(), ".uploads");
-      const uploadPath = path.join(uploadDir, filename!);
+  let folder: Folder | undefined;
 
-      await fs.mkdir(uploadDir, { recursive: true });
+  if (query.folder) {
+    folder = await useDrizzle()
+      .query
+      .folders
+      .findFirst({
+        where: eq(tables.folders.id, query.folder),
+        with: {
+          permissions: {
+            with: {
+              user: {
+                columns: {
+                  id: true
+                }
+              },
+              role: true
+            }
+          }
+        }
+      });
 
-      await fs.writeFile(uploadPath, data);
+    if (!folder) {
+      throw createError({
+        statusCode: 400,
+        message: "Invalid folder"
+      });
+    }
 
-      const stat = await fs.stat(uploadPath).catch(() => null);
-
-      const asset = await useDrizzle()
-        .insert(tables.assets)
-        .values({
-          filename: filename!,
-          path: uploadPath,
-          mimeType: item.type!,
-          size: stat!.size,
-          uploader: user.id
-        })
-        .returning()
-        .get();
-
-      console.log("uploaded file", asset);
-      // }
+    if (folder.permissions.length) {
+      await authorize(event, canUploadToFolder, folder);
     }
   }
+
+  const item = formData[0];
+
+  if (!item.type) {
+    throw createError({
+      statusCode: 400,
+      message: "Invalid file type"
+    });
+  }
+
+  const id = useHash();
+  const isImage = item.type.startsWith("image/");
+
+  const { filename, data } = item;
+  let uploadDir = path.join(process.cwd(), env.UPLOADS_DIR, id);
+  if (folder) {
+    uploadDir = path.join(process.cwd(), env.UPLOADS_DIR, folder.path, id);
+  }
+
+  const uploadPath = path.join(uploadDir, filename!);
+
+  await fs.mkdir(uploadDir, { recursive: true });
+
+  await fs.writeFile(uploadPath, data);
+
+  const stat = await fs.stat(uploadPath).catch(() => null);
+
+  return await useDrizzle()
+    .insert(tables.assets)
+    .values({
+      id,
+      filename: filename!,
+      path: uploadPath,
+      mimeType: item.type,
+      size: stat!.size,
+      owner: user.id,
+      folder: query.folder,
+      isImage: isImage
+    })
+    .returning()
+    .get();
 });

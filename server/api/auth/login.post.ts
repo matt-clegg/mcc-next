@@ -14,6 +14,7 @@ export default eventHandler(async (event) => {
     .where(eq(tables.users.email, email))
     .get();
 
+  // TODO: Need to handle timing attacks
   if (!user) {
     throw createError({
       statusCode: 401,
@@ -35,7 +36,6 @@ export default eventHandler(async (event) => {
     });
   }
 
-  // const loggedInUser = await getUser(user.id);
   const loggedInUser = await updateUser(user.id, {
     lastAccess: new Date().toISOString()
   });

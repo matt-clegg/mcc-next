@@ -2,6 +2,7 @@
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
 import users from "./users";
+import folderPermissions from "./folder-permissions";
 
 export const roles = sqliteTable("roles", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
@@ -16,7 +17,8 @@ export const userRoles = sqliteTable("user_roles", {
 }));
 
 export const roleRelations = relations(roles, ({ many }) => ({
-  userRoles: many(userRoles)
+  userRoles: many(userRoles),
+  folderPermissions: many(folderPermissions)
 }));
 
 export const userRoleRelations = relations(userRoles, ({ one }) => ({

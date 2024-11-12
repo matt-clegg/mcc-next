@@ -15,6 +15,7 @@ export const transforms = sqliteTable("transforms", {
   height: integer("height"),
   format: text("format"),
   quality: integer("quality"),
+  blur: integer("blur"),
   createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
 });
 

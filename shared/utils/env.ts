@@ -7,8 +7,7 @@ const EnvSchema = z.object({
   NUXT_SESSION_PASSWORD: z.string(),
   DB_FILE_NAME: z.string(),
   ADMIN_EMAIL: z.string().email(),
-  TURSO_DATABASE_URL: z.string(),
-  TURSO_AUTH_TOKEN: z.string().optional()
+  UPLOADS_DIR: z.string().default(".uploads")
 });
 
 export type EnvSchema = z.infer<typeof EnvSchema>;

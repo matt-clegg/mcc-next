@@ -6,6 +6,7 @@ import memberships from "./memberships";
 import familyMembers from "./family-members";
 import { userRoles } from "./roles";
 import { credentials } from "./credentials";
+import folderPermissions from "./folder-permissions";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
@@ -34,7 +35,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   familyMembersOfUser: many(familyMembers, {
     relationName: "familyMembersOfUser"
   }),
-  credentials: one(credentials)
+  credentials: one(credentials),
+  folderPermissions: many(folderPermissions)
 }));
 
 export type UserInsert = typeof users.$inferInsert;

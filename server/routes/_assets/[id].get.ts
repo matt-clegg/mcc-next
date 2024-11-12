@@ -1,11 +1,20 @@
-﻿import fs from "node:fs";
+﻿import { promises as fs, createReadStream } from "node:fs";
 import path from "node:path";
 import { and, eq } from "drizzle-orm";
 import sharp from "sharp";
 import { z } from "zod";
+import type { H3Event } from "h3";
 
 type AvailableImageFormats = keyof sharp.FormatEnum;
 const allowedImageFormats = ["avif", "dz", "fits", "gif", "heif", "input", "jpeg", "jpg", "jp2", "jxl", "magick", "openslide", "pdf", "png", "ppm", "raw", "svg", "tiff", "tif", "v", "webp"] as const;
+
+function serveAsset(event: H3Event, path: string, format: string, size: number) {
+  const stream = createReadStream(path);
+  event.node.res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  event.node.res.setHeader("Content-Type", format);
+  event.node.res.setHeader("Content-Length", size);
+  return sendStream(event, stream);
+}
 
 export default eventHandler(async (event) => {
   const id = getRouterParam(event, "id")!;
@@ -15,14 +24,19 @@ export default eventHandler(async (event) => {
     height: z.coerce.number().positive().optional(),
     quality: z.coerce.number().min(1).max(100).optional(),
     format: z.enum(allowedImageFormats).optional(),
-    fit: z.enum(["cover", "contain", "fill", "inside", "outside"]).optional()
+    fit: z.enum(["cover", "contain", "fill", "inside", "outside"]).optional(),
+    blur: z.coerce.number().min(0).max(100).optional()
   }).parse);
 
   const asset = await useDrizzle()
-    .select()
-    .from(tables.assets)
-    .where(eq(tables.assets.id, id))
-    .get();
+    .query
+    .assets
+    .findFirst({
+      where: eq(tables.assets.id, id),
+      with: {
+        folder: true
+      }
+    });
 
   if (!asset) {
     throw createError({
@@ -31,10 +45,8 @@ export default eventHandler(async (event) => {
     });
   }
 
-  const fsPromises = fs.promises;
-
   const fileExists = async (path: string) => {
-    return await fsPromises.stat(path).catch(() => null);
+    return await fs.stat(path).catch(() => null);
   };
 
   if (!(await fileExists(asset.path))) {
@@ -50,6 +62,7 @@ export default eventHandler(async (event) => {
   if (query.format) transforms.push(`f${query.format}`);
   if (query.quality) transforms.push(`q${query.quality}`);
   if (query.fit) transforms.push(`t${query.fit}`);
+  if (query.blur) transforms.push(`b${query.blur}`);
 
   const transformKey = transforms.join("_");
 
@@ -67,11 +80,7 @@ export default eventHandler(async (event) => {
       });
     }
 
-    const stream = fs.createReadStream(transformation.path);
-    event.node.res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-    event.node.res.setHeader("Content-Type", transformation.mimeType);
-    event.node.res.setHeader("Content-Length", transformation.size);
-    return sendStream(event, stream);
+    return serveAsset(event, transformation.path, transformation.mimeType, transformation.size);
   }
 
   const isImage = asset.mimeType.startsWith("image/");
@@ -83,8 +92,13 @@ export default eventHandler(async (event) => {
 
     const safeFilename = path.basename(asset.path, path.extname(asset.path));
     const transformedFilename = `${safeFilename}_${transformKey}.${format}`;
-    const transformedPath = path.join(process.cwd(), ".uploads", "transformed", transformedFilename);
+    let transformedPath = path.join(process.cwd(), env.UPLOADS_DIR, asset.id, transformedFilename);
+    if (asset.folder) {
+      transformedPath = path.join(process.cwd(), env.UPLOADS_DIR, asset.folder.path, asset.id, transformedFilename);
+    }
 
+    // Needed to stop Windows file locks
+    sharp.cache(false);
     let image = sharp(asset.path);
 
     if (query.width || query.height) {
@@ -100,11 +114,17 @@ export default eventHandler(async (event) => {
       });
     }
 
+    if (query.blur) {
+      image = image.blur(query.blur);
+    }
+
     const transformedDir = path.dirname(transformedPath);
-    fs.mkdirSync(transformedDir, { recursive: true });
+    await fs.mkdir(transformedDir, { recursive: true });
 
     await image.toFile(transformedPath);
-    const transformedStat = await fsPromises.stat(transformedPath).catch(() => null);
+    const transformedStat = await fs.stat(transformedPath).catch(() => null);
+
+    image.destroy();
 
     await useDrizzle()
       .insert(tables.transforms)
@@ -121,18 +141,10 @@ export default eventHandler(async (event) => {
         quality: query.quality ?? null
       });
 
-    const transformedStream = fs.createReadStream(transformedPath);
-    event.node.res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-    event.node.res.setHeader("Content-Type", `image/${format}`);
-    event.node.res.setHeader("Cache-Length", transformedStat!.size.toString());
-    return sendStream(event, transformedStream);
+    return serveAsset(event, transformedPath, format, transformedStat!.size);
   }
   else {
-    // serving non image or an image with no transforms
-    const stream = fs.createReadStream(asset.path);
-    event.node.res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-    event.node.res.setHeader("Content-Type", asset.mimeType);
-    event.node.res.setHeader("Content-Length", asset.size);
-    return sendStream(event, stream);
+    // Serving non image or an image with no transforms
+    return serveAsset(event, asset.path, asset.mimeType, asset.size);
   }
 });

@@ -5,7 +5,7 @@
     firstName: string;
     lastName: string;
     dateOfBirth: string;
-    lastAccess: string;
+    lastAccess: string | null;
     isAdmin: boolean;
     isJunior: boolean;
     parent: string | null;

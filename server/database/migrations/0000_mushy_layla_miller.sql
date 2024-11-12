@@ -4,9 +4,12 @@ CREATE TABLE `assets` (
 	`path` text NOT NULL,
 	`mimetype` text NOT NULL,
 	`size` integer NOT NULL,
-	`uploader_user_id` text NOT NULL,
+	`owner_id` text NOT NULL,
+	`folder_id` text,
+	`is_image` integer DEFAULT false NOT NULL,
 	`created_at` text NOT NULL,
-	FOREIGN KEY (`uploader_user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null
+	FOREIGN KEY (`owner_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE set null,
+	FOREIGN KEY (`folder_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `credentials` (
@@ -25,6 +28,25 @@ CREATE TABLE `family_members` (
 --> statement-breakpoint
 CREATE INDEX `ix_family_members_owner` ON `family_members` (`owner_id`);--> statement-breakpoint
 CREATE INDEX `ix_family_members_user` ON `family_members` (`user_id`);--> statement-breakpoint
+CREATE TABLE `folder_permissions` (
+	`id` text PRIMARY KEY NOT NULL,
+	`folder_id` text NOT NULL,
+	`user_id` text,
+	`role_id` text,
+	`created_at` text NOT NULL,
+	FOREIGN KEY (`folder_id`) REFERENCES `folders`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `folders` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`path` text NOT NULL,
+	`full_path` text NOT NULL,
+	`created_at` text NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `memberships` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
@@ -50,6 +72,14 @@ CREATE TABLE `news` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `news_slug_unique` ON `news` (`slug`);--> statement-breakpoint
+CREATE TABLE `pages` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`path` text NOT NULL,
+	`blocks` text NOT NULL,
+	`created_at` text NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `redirects` (
 	`to` text NOT NULL,
 	`from` text NOT NULL,
@@ -75,6 +105,7 @@ CREATE TABLE `transforms` (
 	`height` integer,
 	`format` text,
 	`quality` integer,
+	`blur` integer,
 	`created_at` text NOT NULL,
 	FOREIGN KEY (`original_id`) REFERENCES `assets`(`id`) ON UPDATE no action ON DELETE no action
 );

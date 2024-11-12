@@ -7,3 +7,6 @@ export { default as news, newsRelations } from "./news";
 export { default as redirects } from "./redirects";
 export { default as assets, assetsRelations } from "./assets";
 export { default as transforms, transformsRelations } from "./transforms";
+export { default as folders, foldersRelations } from "./folders";
+export { default as folderPermissions, folderPermissionRelations } from "./folder-permissions";
+export { default as pages, pagesRelations } from "./pages";
