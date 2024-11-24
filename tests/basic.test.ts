@@ -44,7 +44,9 @@ describe("server", async () => {
   const resolved = resolve(process.cwd(), ".data", "test.db");
   await fs.rm(resolved, { force: true, recursive: true });
 
-  await setup();
+  await setup({
+    dev: true
+  });
 
   for (const { fullPath } of walkDir("./tests/basic", { endsWith: ".test.ts" })) {
     await import(fullPath);

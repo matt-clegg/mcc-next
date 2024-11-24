@@ -1,5 +1,5 @@
 ﻿import type { AnySQLiteColumn } from "drizzle-orm/sqlite-core";
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 import { relations, sql } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
 import memberships from "./memberships";
@@ -17,9 +17,20 @@ export const users = sqliteTable("users", {
   lastAccess: text("last_login").notNull().$defaultFn(() => sql`datetime(current_timestamp)`),
   isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
   isJunior: integer("is_junior", { mode: "boolean" }).notNull().default(false),
+  isVerified: integer("is_verified", { mode: "boolean" }).notNull().default(false),
   parent: text("parent_id").references((): AnySQLiteColumn => users.id, { onDelete: "set null" }),
   createdAt: text("created_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`),
   updatedAt: text("updated_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`).$onUpdateFn(() => sql`datetime(current_timestamp)`)
+}, users => ({
+  firstNameIdx: index("ix_users_first_name").on(users.firstName),
+  lastNameIdx: index("ix_users_last_name").on(users.lastName)
+}));
+
+export const passwordResetTokens = sqliteTable("password_reset_tokens", {
+  id: text("id").primaryKey().$defaultFn(() => useHash()),
+  user: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+  token: text("token").notNull().unique(),
+  expiresAt: text("expires_at").notNull()
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -36,7 +47,15 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     relationName: "familyMembersOfUser"
   }),
   credentials: one(credentials),
-  folderPermissions: many(folderPermissions)
+  folderPermissions: many(folderPermissions),
+  passwordRestTokens: one(passwordResetTokens)
+}));
+
+export const passwordRestTokensRelations = relations(passwordResetTokens, ({ one }) => ({
+  user: one(users, {
+    fields: [passwordResetTokens.user],
+    references: [users.id]
+  })
 }));
 
 export type UserInsert = typeof users.$inferInsert;

@@ -1,12 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+
+  extends: ["@nuxt/ui-pro"],
+
   modules: [
     "@nuxt/ui",
     "nuxt-auth-utils",
     "@nuxt/eslint",
     "nuxt-authorization",
     "@nuxt/test-utils/module",
-    "@nuxt/image"
+    "@nuxt/image",
+    "@nuxt/fonts"
   ],
 
   components: [{
@@ -15,6 +19,10 @@ export default defineNuxtConfig({
   }],
 
   devtools: { enabled: true },
+
+  colorMode: {
+    preference: "light"
+  },
 
   routeRules: {
     "/_assets/**": {

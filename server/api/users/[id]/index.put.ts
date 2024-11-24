@@ -1,6 +1,4 @@
-﻿import { editUser } from "#shared/utils/abilities/users";
-
-export default eventHandler(async (event) => {
+﻿export default eventHandler(async (event) => {
   // update a user
   const id = getRouterParam(event, "id")!;
 

@@ -1,7 +1,6 @@
 ﻿import { promises as fs } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
-import { canCreateFolder } from "#shared/utils/abilities/folders";
 
 export default eventHandler(async (event) => {
   await requireUserSession(event);

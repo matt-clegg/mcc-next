@@ -7,7 +7,8 @@ const EnvSchema = z.object({
   NUXT_SESSION_PASSWORD: z.string(),
   DB_FILE_NAME: z.string(),
   ADMIN_EMAIL: z.string().email(),
-  UPLOADS_DIR: z.string().default(".uploads")
+  UPLOADS_DIR: z.string().default(".uploads"),
+  ENCRYPTION_PASSWORD: z.string()
 });
 
 export type EnvSchema = z.infer<typeof EnvSchema>;

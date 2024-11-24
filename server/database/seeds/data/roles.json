@@ -1,11 +1,14 @@
 ﻿[
   {
-    "name": "Editor"
+    "name": "Editor",
+    "priority": 1
   },
   {
-    "name": "Coach"
+    "name": "Coach",
+    "priority": 2
   },
   {
-    "name": "Committee"
+    "name": "Committee",
+    "priority": 3
   }
 ]

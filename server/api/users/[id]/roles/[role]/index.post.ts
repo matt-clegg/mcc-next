@@ -1,6 +1,4 @@
-﻿import { modifyUserRoles } from "#shared/utils/abilities/roles";
-
-// Give a user a role
+﻿// Give a user a role
 export default eventHandler(async (event) => {
   const user = getRouterParam(event, "id")!;
   const role = getRouterParam(event, "role")!;

@@ -1,5 +1,4 @@
 ﻿import { eq } from "drizzle-orm";
-import { deleteRole } from "#shared/utils/abilities/roles";
 
 export default eventHandler(async (event) => {
   const id = getRouterParam(event, "id")!;

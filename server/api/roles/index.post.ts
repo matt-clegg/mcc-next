@@ -1,5 +1,4 @@
 ﻿import { z } from "zod";
-import { createRole } from "#shared/utils/abilities/roles";
 
 // Create a new role
 export default eventHandler(async (event) => {

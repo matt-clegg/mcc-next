@@ -1,5 +1,4 @@
 ﻿import { and, eq } from "drizzle-orm";
-import { getRoleForUser } from "#shared/utils/abilities/roles";
 
 // Load a role for a user
 export default eventHandler(async (event) => {

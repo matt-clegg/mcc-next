@@ -9,10 +9,12 @@ type AvailableImageFormats = keyof sharp.FormatEnum;
 const allowedImageFormats = ["avif", "dz", "fits", "gif", "heif", "input", "jpeg", "jpg", "jp2", "jxl", "magick", "openslide", "pdf", "png", "ppm", "raw", "svg", "tiff", "tif", "v", "webp"] as const;
 
 function serveAsset(event: H3Event, path: string, format: string, size: number) {
+  console.log("serving asset");
   const stream = createReadStream(path);
   event.node.res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
   event.node.res.setHeader("Content-Type", format);
   event.node.res.setHeader("Content-Length", size);
+  console.log("returning");
   return sendStream(event, stream);
 }
 
@@ -49,6 +51,7 @@ export default eventHandler(async (event) => {
     return await fs.stat(path).catch(() => null);
   };
 
+  console.log("file exists?");
   if (!(await fileExists(asset.path))) {
     throw createError({
       statusCode: 404,

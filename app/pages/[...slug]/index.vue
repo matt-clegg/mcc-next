@@ -5,7 +5,20 @@ const route = useRoute();
 const slugs = route.params.slug;
 const path = Array.isArray(slugs) ? slugs?.join("/") : slugs;
 
-const { data: page } = await useFetch(`/api/pages/${path}`);
+// const { error, data: page } = await useFetch(`/api/pages/${path}`);
+//
+// if (error.value) {
+//   if (error.value.statusCode === 404) {
+//     throw showError({
+//       statusCode: 404,
+//       statusMessage: "Page not found"
+//     });
+//   }
+//   else {
+//     // TODO: Maybe show toast? Maybe need error handler?
+//     throw error.value;
+//   }
+// }
 
 const blocks: Block[] = [
   {
@@ -21,9 +34,9 @@ const blocks: Block[] = [
 </script>
 
 <template>
-  <div>
+  <u-container>
     <block-renderer :blocks="blocks" />
-  </div>
+  </u-container>
 </template>
 
 <style scoped>

@@ -1,5 +1,4 @@
 ﻿import { and, eq } from "drizzle-orm";
-import { modifyUserRoles } from "#shared/utils/abilities/roles";
 
 // Remove a role from a user
 export default eventHandler(async (event) => {

@@ -2,8 +2,6 @@
 import { promises as fs } from "node:fs";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { canUploadToFolder } from "#shared/utils/abilities/folders";
-import { canUploadAsset } from "#shared/utils/abilities/assets";
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);

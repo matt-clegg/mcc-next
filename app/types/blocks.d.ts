@@ -1,6 +1,7 @@
 ﻿export type BlockType = "image" | "header" | "prose";
 
 export interface BaseBlock {
+  id: string;
   type: BlockType;
 }
 

@@ -1,5 +1,4 @@
 ﻿import { eq } from "drizzle-orm";
-import { listUsersWithRole } from "#shared/utils/abilities/roles";
 
 // Get users with specific role
 export default eventHandler(async (event) => {

@@ -6,6 +6,25 @@ const password = ref("password");
 
 const fileInput = ref(null);
 
+async function seal() {
+  try {
+    await $fetch("/api/medical-info", {
+      method: "POST",
+      body: {
+        allergies: false,
+        asthma: false,
+        diabetes: false,
+        epilepsy: false,
+        other: false,
+        details: ""
+      }
+    });
+  }
+  catch (err: any) {
+    console.error("Error sealing", err);
+  }
+}
+
 async function upload() {
   console.log("f", fileInput.value);
   const files = fileInput.value?.input.files;
@@ -21,7 +40,7 @@ async function upload() {
   }
 
   try {
-    await $fetch("/api/assets?folder=l2ZVA0aI3EjGZ7hEeemSr", {
+    await $fetch("/api/assets?folder=eAxTNk3zXgzZ9iHP1RZ6C", {
       method: "POST",
       body: formData
     });
@@ -68,6 +87,12 @@ async function register() {
   <UContainer>
     <u-button to="/folders">
       Folders
+    </u-button>
+    <u-button to="/pages/foo">
+      Foo page
+    </u-button>
+    <u-button @click="seal">
+      Seal
     </u-button>
     <UCard class="mt-10">
       <div class="space-y-4">

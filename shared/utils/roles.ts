@@ -18,3 +18,4 @@ export function userHasRoleById(user: User, roleId: string) {
   const foundRole = user.roles.find(r => r.id === roleId);
   return !!foundRole;
 }
+ 

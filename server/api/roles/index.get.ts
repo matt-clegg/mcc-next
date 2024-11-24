@@ -1,6 +1,4 @@
-﻿import { listRoles } from "#shared/utils/abilities/roles";
-
-const cachedListRoles = cachedFunction(async () => {
+﻿const cachedListRoles = cachedFunction(async () => {
   console.log("inside load all roles function");
   return useDrizzle()
     .select()

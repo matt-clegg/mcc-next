@@ -13,9 +13,9 @@ function getComponent(type: BlockType) {
     case "header":
       return defineAsyncComponent(() => import("~/components/blocks/header/BlockHeader.vue"));
     case "image":
-      return defineAsyncComponent(() => import("~/components/blocks/BlockImage.vue"));
+      return defineAsyncComponent(() => import("~/components/blocks/image/BlockImage.vue"));
     case "prose":
-      return defineAsyncComponent(() => import("~/components/blocks/BlockProse.vue"));
+      return defineAsyncComponent(() => import("~/components/blocks/prose/BlockProse.vue"));
     default:
       console.warn(`Unknown block type: ${type}`);
   }

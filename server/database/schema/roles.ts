@@ -1,4 +1,4 @@
-﻿import { sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core";
+﻿import { sqliteTable, text, primaryKey, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
 import users from "./users";
@@ -6,7 +6,8 @@ import folderPermissions from "./folder-permissions";
 
 export const roles = sqliteTable("roles", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
-  name: text("name").notNull().unique()
+  name: text("name").notNull().unique(),
+  priority: integer("priority").notNull()
 });
 
 export const userRoles = sqliteTable("user_roles", {

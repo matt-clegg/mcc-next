@@ -1,5 +1,4 @@
 ﻿import { eq } from "drizzle-orm";
-import { getRole } from "#shared/utils/abilities/roles";
 
 const cachedRole = cachedFunction(async (id: string) => {
   console.log("inside cached role function");
