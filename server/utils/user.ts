@@ -1,9 +1,8 @@
 ﻿import { eq, inArray } from "drizzle-orm";
-import type { User } from "#auth-utils";
 import { tables } from "~~/server/utils/drizzle";
-import type { UserInsert } from "~~/server/database/schema/users";
+import type { UserInsert, UserSelect } from "~~/server/database/schema/users";
 
-export async function listUsers(ids?: string[]): Promise<User[]> {
+export async function listUsers(ids?: string[]): Promise<UserSelect[]> {
   // TODO: Pagination?
   const users = await useDrizzle()
     .query
@@ -28,7 +27,7 @@ export async function listUsers(ids?: string[]): Promise<User[]> {
   }));
 }
 
-export async function getUser(id: string): Promise<User | undefined> {
+export async function getUser(id: string): Promise<UserSelect | undefined> {
   const user = await useDrizzle()
     .query
     .users
@@ -55,7 +54,7 @@ export async function getUser(id: string): Promise<User | undefined> {
   return undefined;
 }
 
-export async function updateUser(id: string, user: Partial<User>) {
+export async function updateUser(id: string, user: Partial<UserSelect>) {
   await useDrizzle()
     .update(tables.users)
     .set(user)
@@ -64,7 +63,7 @@ export async function updateUser(id: string, user: Partial<User>) {
   return getUser(id);
 }
 
-export async function createUser(user: UserInsert): Promise<User> {
+export async function createUser(user: UserInsert): Promise<UserSelect> {
   const { id } = await useDrizzle()
     .insert(tables.users)
     .values(user)

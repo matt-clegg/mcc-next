@@ -1,5 +1,8 @@
 ﻿declare module "#auth-utils" {
-  interface User {
+
+  // This should contain minimal information about the session user
+  // More user info should be loaded via from /api/users/me
+  interface SessionUser {
     id: string;
     email: string;
     firstName: string;
@@ -7,10 +10,6 @@
     dateOfBirth: string;
     lastAccess: string | null;
     isAdmin: boolean;
-    isJunior: boolean;
-    parent: string | null;
-    createdAt: string;
-    updatedAt: string;
     roles: {
       id: string;
       name: string;

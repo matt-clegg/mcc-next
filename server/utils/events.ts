@@ -1,6 +1,6 @@
 ﻿import { eq } from "drizzle-orm";
 import type { EventPrice } from "~~/server/database/schema/events/event-prices";
-import type { User } from "#auth-utils";
+import type { SessionUser } from "#auth-utils";
 
 export async function getEvent(eventId: string, instance?: number) {
   return useDrizzle()
@@ -44,7 +44,7 @@ export async function getEventPrices(eventId: string) {
     .where(eq(tables.eventPrices.event, eventId));
 }
 
-export function getPriceForUser(user: User, eventPrices: EventPrice[]) {
+export function getPriceForUser(user: SessionUser, eventPrices: EventPrice[]) {
   if (!user.roles.length) {
     // user has no roles???
     return null;

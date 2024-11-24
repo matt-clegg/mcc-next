@@ -5,8 +5,7 @@ import * as schema from "~~/server/database/schema";
 export const tables = schema;
 
 const db = drizzle(env.DB_FILE_NAME, {
-  schema,
-  logger: true
+  schema
 });
 
 //  drizzle({

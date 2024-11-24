@@ -59,5 +59,6 @@ export const passwordRestTokensRelations = relations(passwordResetTokens, ({ one
 }));
 
 export type UserInsert = typeof users.$inferInsert;
+export type UserSelect = typeof users.$inferSelect;
 
 export default users;

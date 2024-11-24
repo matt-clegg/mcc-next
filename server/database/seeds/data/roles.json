@@ -1,14 +1,32 @@
 ﻿[
   {
     "name": "Editor",
+    "alias": "editor",
+    "is_public": true,
     "priority": 1
   },
   {
     "name": "Coach",
+    "alias": "coach",
+    "is_public": true,
     "priority": 2
   },
   {
+    "name": "User Manager",
+    "alias": "manage-users",
+    "is_public": false,
+    "priority": 0
+  },
+  {
+    "name": "Event Manager",
+    "alias": "manage-events",
+    "is_public": false,
+    "priority": 0
+  },
+  {
     "name": "Committee",
+    "alias": "committee",
+    "is_public": true,
     "priority": 3
   }
 ]

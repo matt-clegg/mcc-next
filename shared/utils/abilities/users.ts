@@ -1,6 +1,6 @@
-﻿import type { User } from "#auth-utils";
+﻿import type { SessionUser } from "#auth-utils";
 
-export const editUser = defineAbility((loggedInUser: User, userToEditId: string) => {
+export const editUser = defineAbility((loggedInUser: SessionUser, userToEditId: string) => {
   if (loggedInUser.isAdmin) {
     return true;
   }

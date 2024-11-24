@@ -1,6 +1,6 @@
-﻿import type { User } from "#auth-utils";
+﻿import type { SessionUser } from "#auth-utils";
 
-export const canUploadAsset = defineAbility((loggedInUser: User) => {
+export const canUploadAsset = defineAbility((loggedInUser: SessionUser) => {
   console.log("user", loggedInUser);
 
   if (loggedInUser.isAdmin) {

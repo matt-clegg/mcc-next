@@ -4,7 +4,7 @@ import { z } from "zod";
 export async function getPaginationQuery(event: H3Event) {
   return await getValidatedQuery(event, z.object({
     page: z.coerce.number().optional().default(1),
-    limit: z.coerce.number().max(100).optional().default(10)
+    limit: z.coerce.number().max(50).optional().default(10)
   }).parse);
 }
 

@@ -1,24 +1,15 @@
 ﻿<script setup lang="ts">
-import type { SessionUser } from "#auth-utils";
-
 definePageMeta({
   layout: "admin"
 });
 
 const columns = [{
-  key: "name",
-  label: "Name",
+  key: "title",
+  label: "Title",
   sortable: true
-}, {
-  key: "email",
-  label: "Email"
 }, {
   key: "createdAt",
   label: "Date created",
-  sortable: true
-}, {
-  key: "lastAccess",
-  label: "Last access",
   sortable: true
 }, {
   key: "actions"
@@ -28,7 +19,6 @@ const { page, limit } = usePagination();
 const { sortConfig, sortValue } = useSort();
 const { q, qDebounced } = useQuery();
 
-// TODO: Could move query and fetch into composable?
 const query = computed(() => ({
   q: qDebounced.value,
   page: page.value,
@@ -36,12 +26,12 @@ const query = computed(() => ({
   sort: sortValue.value
 }));
 
-const { data, status } = await useFetch<Paginated<SessionUser[]>>("/api/admin/users", {
+const { data, status } = await useFetch<Paginated<any[]>>("/api/admin/events", {
   query,
   default: () => ({ data: [], count: 0 })
 });
 
-const users = computed(() => data.value.data);
+const events = computed(() => data.value.data);
 const count = computed(() => data.value.count);
 
 watch(q, () => page.value = 1);
@@ -49,14 +39,13 @@ watch(q, () => page.value = 1);
 function actionItems(row: SessionUser) {
   return [
     [{
-      label: "Edit user",
+      label: "Edit event",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => console.log("Edit", row.id)
     }],
     [{
-      label: "Delete user",
-      icon: "i-heroicons-trash-20-solid",
-      color: "red"
+      label: "Delete event",
+      icon: "i-heroicons-trash-20-solid"
     }]
   ];
 }
@@ -74,7 +63,7 @@ const resultsLabel = computed(() => {
   <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar
-        title="Users"
+        title="Events"
         :badge="count"
       >
         <template #right>
@@ -83,7 +72,7 @@ const resultsLabel = computed(() => {
             v-model="q"
             icon="i-heroicons-funnel"
             autocomplete="off"
-            placeholder="Filter users..."
+            placeholder="Filter events..."
             class="hidden lg:block"
             @keydown.esc="$event.target.blur()"
           >
@@ -138,7 +127,7 @@ const resultsLabel = computed(() => {
       </UDashboardToolbar>
       <UTable
         v-model:sort="sortConfig"
-        :rows="users"
+        :rows="events"
         :columns="columns"
         :loading="status === 'pending'"
         sort-mode="manual"

@@ -91,8 +91,8 @@ async function register() {
     <u-button to="/pages/foo">
       Foo page
     </u-button>
-    <u-button @click="seal">
-      Seal
+    <u-button to="/admin">
+      Admin
     </u-button>
     <UCard class="mt-10">
       <div class="space-y-4">

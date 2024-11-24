@@ -1,8 +1,12 @@
 ﻿import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default <Partial<Config>> {
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Karla", ...defaultTheme.fontFamily.sans]
+      },
       colors: {
         "royal-blue": {
           50: "#eef4ff",

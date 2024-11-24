@@ -1,0 +1,9 @@
+﻿export default eventHandler(async (event) => {
+  const queryColumns = [tables.events.title, tables.events.location];
+  const sortColumns = {
+    name: tables.events.title,
+    createdAt: tables.events.createdAt
+  };
+
+  return await getQueryData(event, tables.events, queryColumns, sortColumns);
+});

@@ -6,7 +6,9 @@ import folderPermissions from "./folder-permissions";
 
 export const roles = sqliteTable("roles", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
-  name: text("name").notNull().unique(),
+  name: text("name").notNull(),
+  alias: text("alias").notNull().unique(),
+  isPublic: integer("is_public", { mode: "boolean" }).notNull().default(false),
   priority: integer("priority").notNull()
 });
 

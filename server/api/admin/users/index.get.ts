@@ -1,33 +1,20 @@
-﻿import { z } from "zod";
+﻿import type { SessionUser } from "#auth-utils";
 
 export default eventHandler(async (event) => {
-  const { page, limit } = await getPaginationQuery(event);
+  await requireUserSession(event);
 
-  const { sort, q } = await getValidatedQuery(event, z.object({
-    sort: z.string().optional(),
-    q: z.string().optional()
-  }).parse);
+  await authorize(event, adminListUsers);
 
-  let query = useDrizzle()
-    .select()
-    .from(tables.users)
-    .$dynamic();
+  const queryColumns = [
+    tables.users.firstName,
+    tables.users.lastName,
+    tables.users.email];
 
-  // WHERE clause needs to happen first
-  if (q) {
-    query = withTextQuery(query, q, tables.users.firstName, tables.users.lastName, tables.users.email);
-  }
+  const sortColumns = {
+    name: tables.users.lastName,
+    createdAt: tables.users.createdAt,
+    lastAccess: tables.users.lastAccess
+  };
 
-  // Then the ORDER BY clause
-  if (sort) {
-    query = withSort(query, sort, {
-      name: tables.users.lastName,
-      date: tables.users.createdAt
-    });
-  }
-
-  // Finally the LIMIT and OFFSET clauses
-  query = withPagination(query, page, limit);
-
-  return await queryWithCount(query);
+  return getQueryData<SessionUser[]>(event, tables.users, queryColumns, sortColumns);
 });

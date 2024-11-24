@@ -1,4 +1,4 @@
-﻿import type { User } from "#auth-utils";
+﻿import type { SessionUser } from "#auth-utils";
 
 export type Role = {
   id: string;
@@ -7,5 +7,5 @@ export type Role = {
 
 export type UserRole = {
   role: Role;
-  user: User;
+  user: SessionUser; // TODO: Switch actual User type
 };

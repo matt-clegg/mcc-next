@@ -17,10 +17,6 @@ if (loggedIn) {
 </template>
 
 <style>
-html {
-  font-family: 'Karla', Arial, sans-serif;
-}
-
 h1,
 h2,
 h3,

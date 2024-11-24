@@ -85,7 +85,7 @@ const disableSort = computed(() => status.value === "pending");
             {{ image.filename }}
           </p>
           <p class="pointer-events-none block text-sm font-medium text-gray-500">
-            {{ formatDistanceToNow(new Date(image.createdAt)) }} ago
+            {{ timeAgo(image.createdAt) }}
           </p>
         </li>
       </ul>

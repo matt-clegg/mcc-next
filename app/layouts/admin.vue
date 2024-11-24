@@ -14,6 +14,22 @@ const links = computed(() => [
     icon: "i-heroicons-users",
     to: "/admin/users",
     badge: userCount.value
+  },
+  {
+    id: "events",
+    label: "Events",
+    to: "/admin/events",
+    icon: "i-heroicons-calendar-days",
+    children: [{
+      label: "Events",
+      to: "/admin/events",
+      exact: true,
+      badge: "464"
+    }, {
+      label: "Bookings",
+      to: "/admin/events/members",
+      badge: "35625"
+    }]
   }
 ]);
 </script>
@@ -22,10 +38,11 @@ const links = computed(() => [
   <u-dashboard-layout>
     <u-dashboard-panel
       :width="250"
-      collapse
+      :resizable="{ min: 200, max: 300 }"
+      collapsible
     >
       <u-dashboard-navbar>
-        <template #left>
+        <template #right>
           <u-button
             to="/"
             variant="ghost"
