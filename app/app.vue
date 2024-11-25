@@ -1,10 +1,7 @@
 <script setup lang="ts">
-const { loggedIn, fetch } = useUserSession();
-
-if (loggedIn) {
-  console.log("fetching");
-  await fetch();
-}
+useHead({
+  titleTemplate: title => title ? `${title} - MCC Next` : "MCC Next"
+});
 </script>
 
 <template>
@@ -13,6 +10,7 @@ if (loggedIn) {
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <UNotifications />
   </div>
 </template>
 

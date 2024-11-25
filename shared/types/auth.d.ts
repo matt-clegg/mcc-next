@@ -10,10 +10,7 @@
     dateOfBirth: string;
     lastAccess: string | null;
     isAdmin: boolean;
-    roles: {
-      id: string;
-      name: string;
-    }[];
+    roles: Role[];
   }
 }
 export {};

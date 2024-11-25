@@ -1,4 +1,20 @@
-﻿export type MedicalInfo = {
+﻿export type User = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  lastAccess: string;
+  isAdmin: boolean;
+  isJunior: boolean;
+  isVerified: boolean;
+  parent?: string;
+  createdAt: string;
+  updatedAt: string;
+  roles?: Role[];
+};
+
+export type MedicalInfo = {
   allergies: boolean;
   asthma: boolean;
   diabetes: boolean;

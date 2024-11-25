@@ -7,3 +7,4 @@ export * from "./abilities/roles";
 export * from "./abilities/users";
 export * from "./abilities/admin";
 export * from "./abilities/admin/users";
+export * from "./abilities/admin/roles";

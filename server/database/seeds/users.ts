@@ -30,6 +30,17 @@ export default async function seed(db: Database) {
     passwordHash
   });
 
+  const roles = await db
+    .select()
+    .from(schema.roles);
+
+  for (const role of roles) {
+    await db.insert(schema.userRoles).values({
+      user: id,
+      role: role.id
+    });
+  }
+
   const users = [];
   const batchSize = 50;
   const userIds = [];

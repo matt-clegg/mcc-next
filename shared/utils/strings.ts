@@ -6,3 +6,10 @@
     .replace(/-+/g, "-");
   return input;
 }
+
+export function abbreviateNumber(input: number) {
+  return Intl.NumberFormat("en-GB", {
+    notation: "compact",
+    maximumFractionDigits: 1
+  }).format(input);
+}

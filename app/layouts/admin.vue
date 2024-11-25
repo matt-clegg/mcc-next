@@ -1,37 +1,57 @@
 ﻿<script setup lang="ts">
+import { computedAsync } from "@vueuse/core";
+import type { DashboardSidebarLink } from "#ui-pro/types";
+
 const { data: userCount } = await useFetch("/api/admin/users/count");
 
-const links = computed(() => [
-  {
-    id: "home",
-    label: "Home",
-    icon: "i-heroicons-home",
-    to: "/admin"
-  },
-  {
-    id: "users",
-    label: "Users",
-    icon: "i-heroicons-users",
-    to: "/admin/users",
-    badge: userCount.value
-  },
-  {
-    id: "events",
+const links = computedAsync(async () => {
+  const items: DashboardSidebarLink[] = [
+    {
+      label: "Home",
+      icon: "i-heroicons-home",
+      to: "/admin"
+    }
+  ];
+
+  if (await allows(adminListUsers)) {
+    const users: DashboardSidebarLink = {
+      label: "Users",
+      icon: "i-heroicons-users",
+      to: "/admin/users",
+      children: [{
+        label: "Users",
+        to: "/admin/users",
+        badge: abbreviateNumber(userCount.value ?? 0)
+      }]
+    };
+
+    if (await allows(adminListRoles)) {
+      users.children!.push({
+        label: "User roles",
+        to: "/admin/roles"
+      });
+    }
+
+    items.push(users);
+  }
+
+  items.push({
     label: "Events",
     to: "/admin/events",
     icon: "i-heroicons-calendar-days",
     children: [{
       label: "Events",
       to: "/admin/events",
-      exact: true,
-      badge: "464"
+      badge: abbreviateNumber(353)
     }, {
       label: "Bookings",
       to: "/admin/events/members",
-      badge: "35625"
+      badge: abbreviateNumber(35625)
     }]
-  }
-]);
+  });
+
+  return items;
+}, []);
 </script>
 
 <template>
@@ -67,16 +87,16 @@ const links = computed(() => [
         <!--          @update:links="colors => defaultColors = colors" -->
         <!--        /> -->
 
-        <div class="flex-1" />
+        <!--        <div class="flex-1" /> -->
 
         <!--        <u-dashboard-sidebar-links :links="footerLinks" /> -->
 
-        <u-divider class="sticky bottom-0" />
+        <!--        <u-divider class="sticky bottom-0" /> -->
 
-        <template #footer>
-          <!-- ~/components/UserDropdown.vue -->
-          <!--          <UserDropdown /> -->
-        </template>
+        <!--        <template #footer> -->
+        <!--          &lt;!&ndash; ~/components/UserDropdown.vue &ndash;&gt; -->
+        <!--          &lt;!&ndash;          <UserDropdown /> &ndash;&gt; -->
+        <!--        </template> -->
       </u-dashboard-sidebar>
     </u-dashboard-panel>
 

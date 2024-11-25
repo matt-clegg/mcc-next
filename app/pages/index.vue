@@ -46,7 +46,7 @@ async function upload() {
     });
   }
   catch (err: any) {
-    console.error("Error uploading", err);
+    handleFetchError(err);
   }
 }
 
@@ -62,7 +62,7 @@ async function login() {
     await fetch();
   }
   catch (err: any) {
-    console.error("Error logging in", err);
+    handleFetchError(err);
   }
 }
 
@@ -78,7 +78,7 @@ async function register() {
     await fetch();
   }
   catch (err: any) {
-    console.error("Error logging in", err);
+    handleFetchError(err);
   }
 }
 </script>

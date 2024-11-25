@@ -1,8 +1,7 @@
 ﻿<script setup lang="ts">
-import type { SessionUser } from "#auth-utils";
-
 definePageMeta({
-  layout: "admin"
+  layout: "admin",
+  middleware: "admin"
 });
 
 const columns = [{
@@ -36,7 +35,7 @@ const query = computed(() => ({
   sort: sortValue.value
 }));
 
-const { data, status } = await useFetch<Paginated<SessionUser[]>>("/api/admin/users", {
+const { data, status } = await useFetch<Paginated<User[]>>("/api/admin/users", {
   query,
   default: () => ({ data: [], count: 0 })
 });
@@ -46,7 +45,7 @@ const count = computed(() => data.value.count);
 
 watch(q, () => page.value = 1);
 
-function actionItems(row: SessionUser) {
+function actionItems(row: User) {
   return [
     [{
       label: "Edit user",
@@ -86,11 +85,7 @@ const resultsLabel = computed(() => {
             placeholder="Filter users..."
             class="hidden lg:block"
             @keydown.esc="$event.target.blur()"
-          >
-            <template #trailing>
-              <UKbd value="/" />
-            </template>
-          </UInput>
+          />
         </template>
       </UDashboardNavbar>
 

@@ -4,14 +4,15 @@ definePageMeta({
   middleware: "admin"
 });
 
+const newRoleModalOpen = ref(false);
+
 const columns = [{
-  key: "title",
-  label: "Title",
+  key: "name",
+  label: "Name",
   sortable: true
 }, {
-  key: "createdAt",
-  label: "Date created",
-  sortable: true
+  key: "isPublic",
+  label: "Visibility"
 }, {
   key: "actions"
 }];
@@ -27,12 +28,12 @@ const query = computed(() => ({
   sort: sortValue.value
 }));
 
-const { data, status } = await useFetch<Paginated<any[]>>("/api/admin/events", {
+const { data, status, refresh } = await useFetch<Paginated<any[]>>("/api/admin/roles", {
   query,
   default: () => ({ data: [], count: 0 })
 });
 
-const events = computed(() => data.value.data);
+const roles = computed(() => data.value.data);
 const count = computed(() => data.value.count);
 
 watch(q, () => page.value = 1);
@@ -40,19 +41,19 @@ watch(q, () => page.value = 1);
 function actionItems(row: any) {
   return [
     [{
-      label: "Edit event",
+      label: "Edit role",
       icon: "i-heroicons-pencil-square-20-solid",
       click: () => console.log("Edit", row.id)
     }],
     [{
-      label: "Delete event",
+      label: "Delete role",
       icon: "i-heroicons-trash-20-solid"
     }]
   ];
 }
 
 const resultsLabel = computed(() => {
-  if (count.value === 0) {
+  if (!count.value || count.value === 0) {
     return "No results";
   }
 
@@ -64,7 +65,7 @@ const resultsLabel = computed(() => {
   <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar
-        title="Events"
+        title="User Roles"
         :badge="count"
       >
         <template #right>
@@ -73,7 +74,7 @@ const resultsLabel = computed(() => {
             v-model="q"
             icon="i-heroicons-funnel"
             autocomplete="off"
-            placeholder="Filter events..."
+            placeholder="Filter roles..."
             class="hidden lg:block"
             @keydown.esc="$event.target.blur()"
           />
@@ -82,21 +83,12 @@ const resultsLabel = computed(() => {
 
       <UDashboardToolbar>
         <template #left>
-          <!--          <USelectMenu -->
-          <!--            v-model="selectedStatuses" -->
-          <!--            icon="i-heroicons-check-circle" -->
-          <!--            placeholder="Status" -->
-          <!--            multiple -->
-          <!--            :options="defaultStatuses" -->
-          <!--            :ui-menu="{ option: { base: 'capitalize' } }" -->
-          <!--          /> -->
-          <!--          <USelectMenu -->
-          <!--            v-model="selectedLocations" -->
-          <!--            icon="i-heroicons-map-pin" -->
-          <!--            placeholder="Location" -->
-          <!--            :options="defaultLocations" -->
-          <!--            multiple -->
-          <!--          /> -->
+          <UButton
+            icon="i-heroicons-plus"
+            @click="newRoleModalOpen = true"
+          >
+            Add role
+          </UButton>
         </template>
 
         <template #right>
@@ -108,23 +100,11 @@ const resultsLabel = computed(() => {
               :total="count"
             />
           </div>
-
-          <!--          <USelectMenu -->
-          <!--            v-model="selectedColumns" -->
-          <!--            icon="i-heroicons-adjustments-horizontal-solid" -->
-          <!--            :options="defaultColumns" -->
-          <!--            multiple -->
-          <!--            class="hidden lg:block" -->
-          <!--          > -->
-          <!--            <template #label> -->
-          <!--              Display -->
-          <!--            </template> -->
-          <!--          </USelectMenu> -->
         </template>
       </UDashboardToolbar>
       <UTable
         v-model:sort="sortConfig"
-        :rows="events"
+        :rows="roles"
         :columns="columns"
         :loading="status === 'pending'"
         sort-mode="manual"
@@ -132,27 +112,17 @@ const resultsLabel = computed(() => {
         :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
       >
         <template #name-data="{ row }">
-          <div class="flex items-center gap-3">
-            <UAvatar
-              v-bind="row.avatar"
-              :alt="row.name"
-              size="xs"
-            />
-
-            <span class="text-gray-900 dark:text-white font-medium">{{ row.firstName }} {{ row.lastName }}</span>
-          </div>
+          <span class="text-gray-900 font-medium">
+            {{ row.name }}
+          </span>
         </template>
 
-        <template #createdAt-data="{ row }">
-          <UTooltip :text="formatDate(row.createdAt, 'do MMM yyyy @ HH:mm')">
-            {{ timeAgo(row.createdAt) }}
-          </UTooltip>
-        </template>
-
-        <template #lastAccess-data="{ row }">
-          <UTooltip :text="formatDate(row.lastAccess, 'do MMM yyyy @ HH:mm')">
-            {{ timeAgo(row.lastAccess) }}
-          </UTooltip>
+        <template #isPublic-data="{ row }">
+          <UBadge
+            :label="row.isPublic ? 'Public' : 'Hidden'"
+            :color="row.isPublic ? 'green' : 'blue'"
+            variant="subtle"
+          />
         </template>
 
         <template #actions-data="{ row }">
@@ -167,6 +137,10 @@ const resultsLabel = computed(() => {
           </div>
         </template>
       </UTable>
+      <LazyAdminRolesCreateModal
+        v-model:open="newRoleModalOpen"
+        @created="refresh"
+      />
     </UDashboardPanel>
   </UDashboardPage>
 </template>

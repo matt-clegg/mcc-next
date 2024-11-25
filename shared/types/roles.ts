@@ -1,11 +1,12 @@
-﻿import type { SessionUser } from "#auth-utils";
-
-export type Role = {
+﻿export type Role = {
   id: string;
   name: string;
+  alias: string;
+  isPublic: boolean;
+  priority: number;
 };
 
 export type UserRole = {
   role: Role;
-  user: SessionUser; // TODO: Switch actual User type
+  user: User; // TODO: Switch actual User type
 };
