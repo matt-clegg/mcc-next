@@ -13,6 +13,23 @@ const links = computedAsync(async () => {
     }
   ];
 
+  items.push({
+    label: "Pages",
+    icon: "i-heroicons-document-duplicate",
+    to: "/admin/pages",
+    children: [
+      {
+        label: "Pages",
+        to: "/admin/pages",
+        exact: true
+      },
+      {
+        label: "Redirects",
+        to: "/admin/pages/redirects"
+      }
+    ]
+  });
+
   if (await allows(adminListUsers)) {
     const users: DashboardSidebarLink = {
       label: "Users",
@@ -78,7 +95,9 @@ const links = computedAsync(async () => {
           <UDashboardSearchButton />
         </template>
 
-        <u-dashboard-sidebar-links :links="links" />
+        <u-dashboard-sidebar-links
+          :links="links"
+        />
 
         <!--        <u-divider /> -->
 

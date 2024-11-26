@@ -60,13 +60,7 @@ function actionItems(row: User) {
   ];
 }
 
-const resultsLabel = computed(() => {
-  if (count.value === 0) {
-    return "No results";
-  }
-
-  return count.value === 1 ? "1 result" : `${Math.min(limit.value, count.value)} of ${count.value} results`;
-});
+const resultsLabel = computed(() => formatResultLabel(count.value, limit.value));
 </script>
 
 <template>

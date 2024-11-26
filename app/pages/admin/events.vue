@@ -20,20 +20,11 @@ const { page, limit } = usePagination();
 const { sortConfig, sortValue } = useSort();
 const { q, qDebounced } = useQuery();
 
-const query = computed(() => ({
-  q: qDebounced.value,
-  page: page.value,
-  limit: limit.value,
-  sort: sortValue.value
-}));
-
-const { data, status } = await useFetch<Paginated<any[]>>("/api/admin/events", {
-  query,
-  default: () => ({ data: [], count: 0 })
-});
-
-const events = computed(() => data.value.data);
-const count = computed(() => data.value.count);
+const {
+  data: events,
+  count,
+  status
+} = await useDataList("/api/admin/events", qDebounced, page, limit, sortValue);
 
 watch(q, () => page.value = 1);
 
@@ -51,6 +42,7 @@ function actionItems(row: any) {
   ];
 }
 
+// TODO: Move this to util method?
 const resultsLabel = computed(() => {
   if (count.value === 0) {
     return "No results";

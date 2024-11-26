@@ -4,7 +4,12 @@ definePageMeta({
   middleware: "admin"
 });
 
+useSeoMeta({
+  title: "User Roles"
+});
+
 const newRoleModalOpen = ref(false);
+const editRoleModalOpen = ref(false);
 
 const columns = [{
   key: "name",
@@ -17,6 +22,8 @@ const columns = [{
   key: "actions"
 }];
 
+const editRole = ref<Role | null>(null);
+
 const { page, limit } = usePagination();
 const { sortConfig, sortValue } = useSort();
 const { q, qDebounced } = useQuery();
@@ -28,7 +35,7 @@ const query = computed(() => ({
   sort: sortValue.value
 }));
 
-const { data, status, refresh } = await useFetch<Paginated<any[]>>("/api/admin/roles", {
+const { data, status, refresh } = await useFetch<Paginated<Role[]>>("/api/admin/roles", {
   query,
   default: () => ({ data: [], count: 0 })
 });
@@ -38,12 +45,16 @@ const count = computed(() => data.value.count);
 
 watch(q, () => page.value = 1);
 
-function actionItems(row: any) {
+function actionItems(row: Role) {
   return [
     [{
       label: "Edit role",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => console.log("Edit", row.id)
+      click: () => {
+        console.log("editing", row.id, row.name);
+        editRole.value = row;
+        editRoleModalOpen.value = true;
+      }
     }],
     [{
       label: "Delete role",
@@ -52,13 +63,7 @@ function actionItems(row: any) {
   ];
 }
 
-const resultsLabel = computed(() => {
-  if (!count.value || count.value === 0) {
-    return "No results";
-  }
-
-  return count.value === 1 ? "1 result" : `${Math.min(limit.value, count.value)} of ${count.value} results`;
-});
+const resultsLabel = computed(() => formatResultLabel(count.value, limit.value));
 </script>
 
 <template>
@@ -119,8 +124,15 @@ const resultsLabel = computed(() => {
 
         <template #isPublic-data="{ row }">
           <UBadge
-            :label="row.isPublic ? 'Public' : 'Hidden'"
-            :color="row.isPublic ? 'green' : 'blue'"
+            v-if="row.isPublic"
+            label="Public"
+            color="primary"
+            variant="subtle"
+          />
+          <UBadge
+            v-else
+            label="Hidden"
+            color="red"
             variant="subtle"
           />
         </template>
@@ -140,6 +152,14 @@ const resultsLabel = computed(() => {
       <LazyAdminRolesCreateModal
         v-model:open="newRoleModalOpen"
         @created="refresh"
+      />
+
+      <LazyAdminRolesEditModal
+        v-if="editRole?.id"
+        :id="editRole.id"
+        v-model:open="editRoleModalOpen"
+        :state="editRole"
+        @edited="refresh"
       />
     </UDashboardPanel>
   </UDashboardPage>

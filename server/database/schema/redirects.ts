@@ -3,7 +3,8 @@
 export const redirects = sqliteTable("redirects", {
   to: text("to").notNull(),
   from: text("from").notNull(),
-  responseCode: integer("response_code").notNull()
+  responseCode: integer("response_code").notNull(),
+  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
 }, redirects => ({
   pk: primaryKey({ columns: [redirects.from, redirects.to] })
 }));

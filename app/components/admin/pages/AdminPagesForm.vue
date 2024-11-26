@@ -1,4 +1,4 @@
-﻿<script setup lang="ts" generic="T extends Partial<Role>">
+﻿<script setup lang="ts" generic="T extends Partial<Page>">
 import type { FormSubmitEvent } from "#ui/types";
 
 const props = defineProps<{
@@ -8,14 +8,14 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  submit: [FormSubmitEvent<T>];
+  submit: [FormSubmitEvent<any>];
 }>();
 
 const state = reactive({
   ...props.state
 });
 
-function onSubmit(event: FormSubmitEvent<T>) {
+function onSubmit(event: FormSubmitEvent<any>) {
   emits("submit", event);
 }
 </script>

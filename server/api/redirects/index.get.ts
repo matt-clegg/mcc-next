@@ -1,20 +1,10 @@
-﻿import { eq } from "drizzle-orm";
-import { z } from "zod";
+﻿export default eventHandler(async (event) => {
+  await requireUserSession(event);
 
-export default eventHandler(async (event) => {
-  const { slug } = await getValidatedQuery(event, z.object({
-    slug: z.string().optional()
-  }).parse);
+  const queryColumns = [tables.redirects.to, tables.redirects.from];
+  const sortColumns = {
+    createdAt: tables.redirects.createdAt
+  };
 
-  if (slug) {
-    // TODO: Caching
-    return useDrizzle()
-      .select()
-      .from(tables.redirects)
-      .where(eq(tables.redirects.from, slug));
-  }
-
-  return useDrizzle()
-    .select()
-    .from(tables.redirects);
+  return await getQueryData(event, tables.redirects, queryColumns, sortColumns);
 });
