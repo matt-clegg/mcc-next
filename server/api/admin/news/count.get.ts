@@ -6,7 +6,7 @@ export default eventHandler(async (event) => {
 
   const result: { count: number } | undefined = await useDrizzle()
     .select({ count: count() })
-    .from(tables.users)
+    .from(tables.news)
     .get();
 
   return result?.count ?? 0;

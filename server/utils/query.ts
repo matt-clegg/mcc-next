@@ -1,5 +1,5 @@
 ﻿import type { SQLiteSelect, SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
-import { asc, count, desc, like, or } from "drizzle-orm";
+import { asc, count, desc, like, or, getTableColumns } from "drizzle-orm";
 import type { H3Event } from "h3";
 import { z } from "zod";
 
@@ -33,18 +33,96 @@ export function withTextQuery<T extends SQLiteSelect>(db: T, query: string, ...c
   return db.where(or(...conditions));
 }
 
-export async function getQueryData<T>(event: H3Event, source: SQLiteTable, queryColumns?: SQLiteColumn[], sortColumns?: ColumnMap) {
+export function withColumns(
+  db: ReturnType<typeof useDrizzle>,
+  source: SQLiteTable,
+  fields?: string[],
+  relations?: Record<string, { table: SQLiteTable; on: any }>) {
+  const tableColumns = getTableColumns(source);
+
+  let selectedColumns: Record<string, SQLiteColumn<any, any>> = {};
+  const relationFields: Record<string, string[]> = {};
+
+  if (fields && fields.length) {
+    for (const field of fields) {
+      if (field.includes(".")) {
+        const [relationName, fieldName] = field.split(".");
+        if (!relations || !relations[relationName]) {
+          continue;
+        }
+
+        if (!relationFields[relationName]) {
+          relationFields[relationName] = [];
+        }
+
+        relationFields[relationName].push(fieldName);
+      }
+      else if (field in tableColumns) {
+        selectedColumns[field] = tableColumns[field];
+      }
+    }
+  }
+  else {
+    selectedColumns = tableColumns;
+  }
+
+  if (Object.keys(selectedColumns).length === 0) {
+    selectedColumns = tableColumns;
+  }
+
+  const relatedSelectedColumns: Record<string, any> = {};
+
+  for (const relationName in relationFields) {
+    const relation = relations![relationName];
+    if (!relation) {
+      continue;
+    }
+
+    const relatedTableColumns = getTableColumns(relation.table);
+    const fieldsToSelect = relationFields[relationName];
+
+    for (const fieldName of fieldsToSelect) {
+      if (fieldName in relatedTableColumns) {
+        const alias = `${relationName}__${fieldName}`;
+        relatedSelectedColumns[alias] = relatedTableColumns[fieldName];
+      }
+    }
+  }
+
+  const allSelectedColumns = {
+    ...selectedColumns,
+    ...relatedSelectedColumns
+  };
+
+  let query = db.select(allSelectedColumns).from(source).$dynamic();
+
+  for (const relationName in relationFields) {
+    const relation = relations![relationName];
+    if (!relation) {
+      continue;
+    }
+
+    query = query.leftJoin(relation.table, relation.on);
+  }
+
+  return query;
+}
+
+export async function getQueryData<T>(
+  event: H3Event,
+  source: SQLiteTable,
+  queryColumns?: SQLiteColumn[],
+  sortColumns?: ColumnMap,
+  relations?: Record<string, { table: SQLiteTable; on: any }>) {
   const { page, limit } = await getPaginationQuery(event);
 
-  const { sort, q } = await getValidatedQuery(event, z.object({
+  const { sort, q, fields } = await getValidatedQuery(event, z.object({
     sort: z.string().optional(),
-    q: z.string().optional()
+    q: z.string().optional(),
+    fields: z.array(z.string()).optional()
   }).parse);
 
-  let baseQuery = useDrizzle()
-    .select()
-    .from(source)
-    .$dynamic();
+  let baseQuery = withColumns(useDrizzle(), source, fields, relations);
 
   let countQuery = useDrizzle()
     .select({ count: count() })
@@ -72,8 +150,23 @@ export async function getQueryData<T>(event: H3Event, source: SQLiteTable, query
     countQuery.execute()
   ]);
 
+  const mappedData = data.map((item) => {
+    const result: any = {};
+    for (const key in item) {
+      if (key.includes("__")) {
+        const [relationName, fieldName] = key.split("__");
+        if (!result[relationName]) result[relationName] = {};
+        result[relationName][fieldName] = item[key];
+      }
+      else {
+        result[key] = item[key];
+      }
+    }
+    return result;
+  });
+
   return {
-    data,
+    data: mappedData,
     count: countValue
   } as Paginated<T>;
 }

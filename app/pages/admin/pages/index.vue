@@ -92,16 +92,6 @@ const pages: NavigationTree[] = [
     ]
   },
   {
-    label: "Calendar",
-    icon: "i-heroicons-lock-closed",
-    disabled: true
-  },
-  {
-    label: "News",
-    icon: "i-heroicons-lock-closed",
-    disabled: true
-  },
-  {
     label: "Add page or folder",
     icon: "i-heroicons-plus-small-20-solid"
   }

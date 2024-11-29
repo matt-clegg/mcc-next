@@ -1,10 +1,14 @@
-﻿export default eventHandler(async (event) => {
-  await requireUserSession(event);
+﻿import { eq } from "drizzle-orm";
+import { z } from "zod";
 
-  const queryColumns = [tables.redirects.to, tables.redirects.from];
-  const sortColumns = {
-    createdAt: tables.redirects.createdAt
-  };
+export default eventHandler(async (event) => {
+  const { path } = await getValidatedQuery(event, z.object({
+    path: z.string()
+  }).parse);
 
-  return await getQueryData(event, tables.redirects, queryColumns, sortColumns);
+  return useDrizzle()
+    .select()
+    .from(tables.redirects)
+    .where(eq(tables.redirects.from, path))
+    .get();
 });

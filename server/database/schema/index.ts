@@ -10,6 +10,7 @@ export { default as folderPermissions, folderPermissionRelations } from "./folde
 export { default as folders, foldersRelations } from "./folders";
 export { default as medicalInfo, medicalInfoRelations } from "./medical-info";
 export { default as memberships, membershipRelationships } from "./memberships";
+export { default as navigation, navigationRelations } from "./navigation";
 export { default as news, newsRelations } from "./news";
 export { default as pages, pagesRelations } from "./pages";
 export { default as redirects } from "./redirects";

@@ -29,7 +29,7 @@ const {
   data: redirects,
   count,
   status
-} = await useDataList<Redirect[]>("/api/redirects", qDebounced, page, limit, sortValue);
+} = await useDataList<Redirect[]>("/api/admin/redirects", qDebounced, page, limit, sortValue);
 
 watch(q, () => page.value = 1);
 

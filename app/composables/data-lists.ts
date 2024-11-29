@@ -1,14 +1,26 @@
-﻿export async function useDataList<T>(url: string, qDebounced: Ref<string>, page: Ref<number>, limit: Ref<number>, sortValue: Ref<string | undefined>) {
+﻿export type DataListOptions = {
+  q?: Ref<string>;
+  page?: Ref<number>;
+  limit?: Ref<number>;
+  sort?: Ref<string | undefined>;
+  fields?: Ref<string[]>;
+};
+
+export async function useDataList<T>(url: string, opts: DataListOptions = {}) {
   const query = computed(() => ({
-    q: qDebounced.value,
-    page: page.value,
-    limit: limit.value,
-    sort: sortValue.value
+    q: opts.q?.value ?? undefined,
+    page: opts.page?.value ?? undefined,
+    limit: opts.limit?.value ?? undefined,
+    sort: opts.sort?.value ?? undefined,
+    fields: opts.fields?.value ?? undefined
   }));
 
   const { data, status, refresh } = await useFetch<Paginated<T[]>>(url, {
     query,
-    default: () => ({ data: [], count: 0 })
+    default: () => ({ data: [], count: 0 }),
+    onResponseError({ error }) {
+      handleFetchError(error);
+    }
   });
 
   const result = computed(() => data.value.data);

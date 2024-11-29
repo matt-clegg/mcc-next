@@ -4,6 +4,10 @@ definePageMeta({
   middleware: "admin"
 });
 
+useSeoMeta({
+  title: "Events"
+});
+
 const columns = [{
   key: "title",
   label: "Title",
@@ -42,14 +46,7 @@ function actionItems(row: any) {
   ];
 }
 
-// TODO: Move this to util method?
-const resultsLabel = computed(() => {
-  if (count.value === 0) {
-    return "No results";
-  }
-
-  return count.value === 1 ? "1 result" : `${Math.min(limit.value, count.value)} of ${count.value} results`;
-});
+const resultsLabel = computed(() => formatResultLabel(count.value, limit.value));
 </script>
 
 <template>

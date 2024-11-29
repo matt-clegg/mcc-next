@@ -4,20 +4,22 @@ definePageMeta({
   middleware: "admin"
 });
 
+useSeoMeta({
+  title: "News"
+});
+
 const columns = [{
-  key: "name",
-  label: "Name",
+  key: "title",
+  label: "Title",
   sortable: true
-}, {
-  key: "email",
-  label: "Email"
-}, {
+},
+{
+  key: "slug",
+  label: "URL"
+},
+{
   key: "createdAt",
   label: "Date created",
-  sortable: true
-}, {
-  key: "lastAccess",
-  label: "Last access",
   sortable: true
 }, {
   key: "actions"
@@ -27,37 +29,37 @@ const { page, limit } = usePagination();
 const { sortConfig, sortValue } = useSort();
 const { q, qDebounced } = useQuery();
 
+const fields = ref(["title", "createdAt", "createdBy.firstName", "createdBy.lastName", "createdBy.email"]);
+
 const {
-  data: events,
+  data: news,
   count,
   status
-} = await useDataList("/api/admin/users", qDebounced, page, limit, sortValue);
+} = await useDataList<NewsPost[]>("/api/admin/news", { q: qDebounced, page, limit, sort: sortValue, fields });
 
 watch(q, () => page.value = 1);
 
-function actionItems(row: User) {
+function actionItems(_: any) {
   return [
     [{
-      label: "Edit user",
-      icon: "i-heroicons-pencil-square-20-solid",
-      click: () => console.log("Edit", row.id)
-    }],
-    [{
-      label: "Delete user",
-      icon: "i-heroicons-trash-20-solid",
-      color: "red"
+      label: "Delete",
+      icon: "i-heroicons-trash-20-solid"
     }]
   ];
 }
 
 const resultsLabel = computed(() => formatResultLabel(count.value, limit.value));
+
+function getNewsUrl(row: NewsPost) {
+  return `/news/${row.slug}`;
+}
 </script>
 
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar
-        title="Users"
+        title="News"
         :badge="count"
       >
         <template #right>
@@ -66,7 +68,7 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
             v-model="q"
             icon="i-heroicons-funnel"
             autocomplete="off"
-            placeholder="Filter users..."
+            placeholder="Filter news posts..."
             class="hidden lg:block"
             @keydown.esc="$event.target.blur()"
           />
@@ -117,46 +119,47 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
       </UDashboardToolbar>
       <UTable
         v-model:sort="sortConfig"
-        :rows="users"
+        :rows="news"
         :columns="columns"
         :loading="status === 'pending'"
         sort-mode="manual"
         class="w-full"
         :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
       >
-        <template #name-data="{ row }">
-          <div class="flex items-center gap-3">
-            <UAvatar
-              v-bind="row.avatar"
-              :alt="row.name"
-              size="xs"
-            />
-
-            <span class="text-gray-900 dark:text-white font-medium">{{ row.firstName }} {{ row.lastName }}</span>
-          </div>
-        </template>
-
         <template #createdAt-data="{ row }">
           <UTooltip :text="formatDate(row.createdAt, 'do MMM yyyy @ HH:mm')">
             {{ timeAgo(row.createdAt) }}
           </UTooltip>
         </template>
 
-        <template #lastAccess-data="{ row }">
-          <UTooltip :text="formatDate(row.lastAccess, 'do MMM yyyy @ HH:mm')">
-            {{ timeAgo(row.lastAccess) }}
-          </UTooltip>
+        <template #slug-data="{ row }">
+          <UButton
+            :to="getNewsUrl(row)"
+            variant="link"
+            size="sm"
+            trailing-icon="i-heroicons-link-20-solid"
+          >
+            /news/{{ row.slug }}
+          </UButton>
         </template>
 
         <template #actions-data="{ row }">
           <div class="flex justify-end">
-            <UDropdown :items="actionItems(row)">
+            <UButtonGroup
+              size="sm"
+              orientation="horizontal"
+            >
               <UButton
-                color="gray"
-                variant="ghost"
-                icon="i-heroicons-ellipsis-horizontal-20-solid"
+                label="Edit"
+                color="white"
               />
-            </UDropdown>
+              <UDropdown :items="actionItems(row)">
+                <UButton
+                  icon="i-heroicons-chevron-down-20-solid"
+                  color="white"
+                />
+              </UDropdown>
+            </UButtonGroup>
           </div>
         </template>
       </UTable>

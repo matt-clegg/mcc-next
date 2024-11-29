@@ -10,11 +10,16 @@
     return;
   }
 
-  if (target.startsWith("/api") || target.startsWith("/_assets")) {
+  const ignorePaths = [
+    "/_assets",
+    "/admin"
+  ];
+
+  if (ignorePaths.some(path => target.startsWith(path))) {
     return;
   }
 
-  const redirect = await $fetch<{ to: string; responseCode: number } | undefined>(`/api/redirects/${target}`);
+  const redirect = await $fetch<{ to: string; responseCode: number } | undefined>(`/api/redirects?path=${target}`);
 
   if (redirect) {
     return navigateTo(redirect.to, {

@@ -3,6 +3,7 @@ import { computedAsync } from "@vueuse/core";
 import type { DashboardSidebarLink } from "#ui-pro/types";
 
 const { data: userCount } = await useFetch("/api/admin/users/count");
+const { data: newsCount } = await useFetch("/api/admin/news/count");
 
 const links = computedAsync(async () => {
   const items: DashboardSidebarLink[] = [
@@ -10,6 +11,12 @@ const links = computedAsync(async () => {
       label: "Home",
       icon: "i-heroicons-home",
       to: "/admin"
+    },
+    {
+      label: "News",
+      icon: "i-heroicons-newspaper",
+      to: "/admin/news",
+      badge: abbreviateNumber(newsCount.value ?? 0)
     }
   ];
 
@@ -22,6 +29,10 @@ const links = computedAsync(async () => {
         label: "Pages",
         to: "/admin/pages",
         exact: true
+      },
+      {
+        label: "Navigation",
+        to: "/admin/pages/navigation"
       },
       {
         label: "Redirects",

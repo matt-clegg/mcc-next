@@ -12,6 +12,11 @@ const links = [
     exact: true
   },
   {
+    label: "Navigation",
+    icon: "i-heroicons-queue-list",
+    to: "/admin/pages/navigation"
+  },
+  {
     label: "Redirects",
     icon: "i-heroicons-link",
     to: "/admin/pages/redirects"
