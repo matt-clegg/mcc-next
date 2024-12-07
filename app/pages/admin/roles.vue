@@ -5,11 +5,8 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "User Roles"
+  title: "User roles"
 });
-
-const newRoleModalOpen = ref(false);
-const editRoleModalOpen = ref(false);
 
 const columns = [{
   key: "name",
@@ -22,6 +19,8 @@ const columns = [{
   key: "actions"
 }];
 
+const newRoleModalOpen = ref(false);
+const editRoleModalOpen = ref(false);
 const editRole = ref<Role | null>(null);
 
 const { page, limit } = usePagination();
@@ -32,6 +31,7 @@ const query = computed(() => ({
   q: qDebounced.value,
   page: page.value,
   limit: limit.value,
+
   sort: sortValue.value
 }));
 
@@ -149,6 +149,7 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
           </div>
         </template>
       </UTable>
+
       <LazyAdminRolesCreateModal
         v-model:open="newRoleModalOpen"
         @created="refresh"

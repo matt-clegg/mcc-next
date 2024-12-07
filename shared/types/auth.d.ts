@@ -2,7 +2,7 @@
 
   // This should contain minimal information about the session user
   // More user info should be loaded via from /api/users/me
-  interface SessionUser {
+  interface User {
     id: string;
     email: string;
     firstName: string;

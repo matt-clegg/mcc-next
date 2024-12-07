@@ -30,14 +30,14 @@ async function onSubmit() {
         </div>
       </template>
       <div class="flex gap-4 flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 dark:divide-gray-800">
-        <div class="flex ">
+        <div class="flex flex-grow">
           <file-uploader
             class="h-full w-full"
             @input-change="onInputChange"
           />
         </div>
-        <div class="flex">
-          <media-browser />
+        <div class="flex flex-grow">
+          <media-browser class="w-full" />
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
 import pages from "./pages";
+import { roles } from "./roles";
 
 export const navigation = sqliteTable("navigation", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
@@ -12,6 +13,11 @@ export const navigation = sqliteTable("navigation", {
   url: text("url").notNull(),
   order: integer("order").notNull(),
   createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+});
+
+export const navigationRoles = sqliteTable("navigation_roles", {
+  role: text("role_id").references(() => roles.id, { onDelete: "set null" }),
+  navigation: text("navigation_id").references(() => navigation.id, { onDelete: "cascade" })
 });
 
 export const navigationRelations = relations(navigation, ({ one }) => ({
@@ -26,4 +32,13 @@ export const navigationRelations = relations(navigation, ({ one }) => ({
   })
 }));
 
-export default navigation;
+export const navigationRolesRelations = relations(navigationRoles, ({ one }) => ({
+  role: one(roles, {
+    fields: [navigationRoles.role],
+    references: [roles.id]
+  }),
+  navigation: one(navigation, {
+    fields: [navigationRoles.navigation],
+    references: [navigation.id]
+  })
+}));

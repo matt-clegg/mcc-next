@@ -7,10 +7,15 @@ definePageMeta({
 });
 
 const editSlideoverOpen = ref(false);
+const newPageModalOpen = ref(false);
 
 function onEdit() {
   console.log("on edit");
   editSlideoverOpen.value = true;
+}
+
+function onAddClick() {
+  newPageModalOpen.value = true;
 }
 
 const pages: NavigationTree[] = [
@@ -54,8 +59,17 @@ const pages: NavigationTree[] = [
           {
             label: "Club Documents",
             icon: "i-heroicons-document-text"
+          },
+          {
+            label: "Add page or folder",
+            icon: "i-heroicons-plus-small-20-solid"
           }
         ]
+      },
+      {
+        label: "Add page or folder",
+        icon: "i-heroicons-plus-small-20-solid",
+        click: onAddClick
       }
     ]
   },
@@ -78,6 +92,11 @@ const pages: NavigationTree[] = [
       {
         label: "Membership",
         icon: "i-heroicons-document-text"
+      },
+      {
+        label: "Add page or folder",
+        icon: "i-heroicons-plus-small-20-solid",
+        click: onAddClick
       }
     ]
   },
@@ -88,12 +107,18 @@ const pages: NavigationTree[] = [
       {
         label: "Contact Us",
         icon: "i-heroicons-document-text"
+      },
+      {
+        label: "Add page or folder",
+        icon: "i-heroicons-plus-small-20-solid",
+        click: onAddClick
       }
     ]
   },
   {
     label: "Add page or folder",
-    icon: "i-heroicons-plus-small-20-solid"
+    icon: "i-heroicons-plus-small-20-solid",
+    click: onAddClick
   }
 ];
 </script>
@@ -101,6 +126,8 @@ const pages: NavigationTree[] = [
 <template>
   <UDashboardPanelContent>
     <UNavigationTree :links="pages" />
+
+    <LazyAdminPagesCreateModal v-model:open="newPageModalOpen" />
   </UDashboardPanelContent>
 </template>
 

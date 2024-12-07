@@ -1,6 +1,6 @@
-﻿import type { SessionUser } from "#auth-utils";
+﻿import type { User } from "#auth-utils";
 
-export const adminListUsers = defineAbility((loggedInUser: SessionUser) => {
+export const adminListUsers = defineAbility((loggedInUser: User) => {
   if (loggedInUser.isAdmin) {
     return true;
   }

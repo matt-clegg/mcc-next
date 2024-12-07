@@ -1,5 +1,10 @@
 ﻿import { refDebounced } from "@vueuse/core";
 
+export type SortConfig = {
+  column: string;
+  direction: "desc" | "asc";
+};
+
 export function usePagination() {
   const page = ref(1);
   const limit = ref(20);
@@ -10,8 +15,8 @@ export function usePagination() {
   };
 }
 
-export function useSort() {
-  const sortConfig = ref<{ column: string; direction: "desc" | "asc" }>();
+export function useSort(defaults: SortConfig | undefined = undefined) {
+  const sortConfig = ref<SortConfig | undefined>(defaults);
 
   const sortValue = computed(() => {
     if (!sortConfig.value?.column) {

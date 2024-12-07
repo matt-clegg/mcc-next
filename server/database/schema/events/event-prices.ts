@@ -12,10 +12,6 @@ export const eventPrices = sqliteTable("event_prices", {
   createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
 });
 
-export type EventPrice = typeof eventPrices.$inferSelect;
-
-// TODO: Indexes
-
 export const eventPriceRelations = relations(eventPrices, ({ one }) => ({
   event: one(events, {
     fields: [eventPrices.event],

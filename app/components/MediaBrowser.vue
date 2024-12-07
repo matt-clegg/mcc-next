@@ -54,8 +54,9 @@ const disableSort = computed(() => status.value === "pending");
         />
       </u-tooltip>
     </div>
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col w-full">
       <ul
+        v-if="images?.length"
         role="list"
         class="grid grid-cols-2 gap-x-4 gap-y-8 px-4 overflow-y-auto h-[337px]"
       >
@@ -89,6 +90,12 @@ const disableSort = computed(() => status.value === "pending");
           </p>
         </li>
       </ul>
+      <div
+        v-else
+        class="flex justify-center items-center w-full h-[337px]"
+      >
+        No media found
+      </div>
     </div>
   </div>
 </template>

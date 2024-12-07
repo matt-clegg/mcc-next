@@ -28,7 +28,7 @@ const { sortConfig, sortValue } = useSort();
 const { q, qDebounced } = useQuery();
 
 const {
-  data: events,
+  data: users,
   count,
   status
 } = await useDataList("/api/admin/users", qDebounced, page, limit, sortValue);

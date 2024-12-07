@@ -8,14 +8,14 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  submit: [FormSubmitEvent<T>];
+  submit: [FormSubmitEvent<any>];
 }>();
 
 const state = reactive({
   ...props.state
 });
 
-function onSubmit(event: FormSubmitEvent<T>) {
+function onSubmit(event: FormSubmitEvent<unknown>) {
   emits("submit", event);
 }
 </script>

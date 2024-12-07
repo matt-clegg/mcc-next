@@ -81,6 +81,8 @@ async function register() {
     handleFetchError(err);
   }
 }
+
+const date = ref();
 </script>
 
 <template>
@@ -96,17 +98,25 @@ async function register() {
     </u-button>
     <UCard class="mt-10">
       <div class="space-y-4">
-        <template v-if="loggedIn">
-          <pre>{{ user }}</pre>
+        <pre>{{ date }}</pre>
+        <DatePicker
+          v-model="date"
+          mode="dateTime"
+        />
 
-          <nuxt-img
-            provider="local"
-            width="300"
-            height="500"
-            format="webp"
-            src="Tu025fMOzyDmB2oC4vvrt"
-            :placeholder="[15, 25]"
-          />
+        <DateRangePicker />
+
+        <template v-if="loggedIn">
+          <!--          <RichTextEditor /> -->
+
+          <!--          <nuxt-img -->
+          <!--            provider="local" -->
+          <!--            width="300" -->
+          <!--            height="500" -->
+          <!--            format="webp" -->
+          <!--            src="Tu025fMOzyDmB2oC4vvrt" -->
+          <!--            :placeholder="[15, 25]" -->
+          <!--          /> -->
 
           <u-input
             ref="fileInput"
@@ -145,6 +155,6 @@ async function register() {
       </div>
     </UCard>
 
-    <roles-tester />
+    <!--    <roles-tester /> -->
   </UContainer>
 </template>

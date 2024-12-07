@@ -1,8 +1,9 @@
-﻿export default defineNuxtRouteMiddleware(async () => {
+﻿export default defineNuxtRouteMiddleware(async (to) => {
   const { loggedIn } = useUserSession();
 
   if (!loggedIn.value) {
-    return navigateTo("/login");
+    const path = to.fullPath;
+    return navigateTo(`/login?redirect=${encodeURIComponent(path)}`);
   }
 
   const userIsAdmin = await allows(isAdmin);

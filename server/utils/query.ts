@@ -111,9 +111,9 @@ export function withColumns(
 export async function getQueryData<T>(
   event: H3Event,
   source: SQLiteTable,
-  queryColumns?: SQLiteColumn[],
-  sortColumns?: ColumnMap,
-  relations?: Record<string, { table: SQLiteTable; on: any }>) {
+  queryColumns: SQLiteColumn[] = [],
+  sortColumns: ColumnMap = {},
+  relations: Record<string, { table: SQLiteTable; on: any }> = {}) {
   const { page, limit } = await getPaginationQuery(event);
 
   const { sort, q, fields } = await getValidatedQuery(event, z.object({

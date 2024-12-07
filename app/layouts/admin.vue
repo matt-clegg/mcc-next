@@ -67,15 +67,22 @@ const links = computedAsync(async () => {
     label: "Events",
     to: "/admin/events",
     icon: "i-heroicons-calendar-days",
-    children: [{
-      label: "Events",
-      to: "/admin/events",
-      badge: abbreviateNumber(353)
-    }, {
-      label: "Bookings",
-      to: "/admin/events/members",
-      badge: abbreviateNumber(35625)
-    }]
+    children: [
+      {
+        label: "Events",
+        to: "/admin/events",
+        badge: abbreviateNumber(353)
+      },
+      {
+        label: "Bookings",
+        to: "/admin/events/members",
+        badge: abbreviateNumber(35625)
+      },
+      {
+        label: "Settings",
+        to: "/admin/events/settings"
+      }
+    ]
   });
 
   return items;

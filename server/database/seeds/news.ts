@@ -41,13 +41,23 @@ export default async function seed(db: Database) {
       .limit(1)
       .get();
 
+    let status = "published";
+    const rand = Math.random();
+
+    if (rand < 0.1) {
+      status = "scheduled";
+    }
+    else if (rand < 0.3) {
+      status = "draft";
+    }
+
     await db
       .insert(schema.news)
       .values({
         title,
         slug: uniqueSlug,
         content,
-        status: "published",
+        status,
         createdBy: user!.id,
         createdAt: faker.date.past().toISOString()
       });

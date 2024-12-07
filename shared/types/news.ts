@@ -1,8 +1,10 @@
-﻿export type NewsPost = {
+﻿export type NewsStatus = "published" | "draft" | "scheduled";
+
+export type News = {
   title: string;
   slug: string;
   content: string;
-  status: "published" | "draft" | "scheduled";
+  status: NewsStatus;
   createdBy: string;
   createdAt: string;
   updatedAt: string;

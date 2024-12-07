@@ -11,7 +11,7 @@
   parent?: string;
   createdAt: string;
   updatedAt: string;
-  roles?: Role[];
+  roles?: string[];
 };
 
 export type MedicalInfo = {

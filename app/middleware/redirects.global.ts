@@ -12,7 +12,8 @@
 
   const ignorePaths = [
     "/_assets",
-    "/admin"
+    "/admin",
+    "/login"
   ];
 
   if (ignorePaths.some(path => target.startsWith(path))) {

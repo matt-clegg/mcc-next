@@ -17,6 +17,7 @@ export async function useDataList<T>(url: string, opts: DataListOptions = {}) {
 
   const { data, status, refresh } = await useFetch<Paginated<T[]>>(url, {
     query,
+    deep: false,
     default: () => ({ data: [], count: 0 }),
     onResponseError({ error }) {
       handleFetchError(error);

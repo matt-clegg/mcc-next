@@ -13,3 +13,7 @@ export function abbreviateNumber(input: number) {
     maximumFractionDigits: 1
   }).format(input);
 }
+
+export function capitalize(input: string) {
+  return input.charAt(0).toUpperCase() + input.slice(1);
+}

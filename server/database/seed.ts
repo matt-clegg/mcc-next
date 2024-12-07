@@ -6,3 +6,4 @@ const db = useDrizzle();
 await seeds.roles(db);
 await seeds.users(db);
 await seeds.news(db);
+await seeds.events(db);

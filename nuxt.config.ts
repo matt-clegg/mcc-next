@@ -10,13 +10,9 @@ export default defineNuxtConfig({
     "nuxt-authorization",
     "@nuxt/test-utils/module",
     "@nuxt/image",
-    "@nuxt/fonts"
+    "@nuxt/fonts",
+    "nuxt-headlessui"
   ],
-
-  components: [{
-    path: "~/components",
-    pathPrefix: false
-  }],
 
   devtools: { enabled: true },
 

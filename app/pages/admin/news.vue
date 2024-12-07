@@ -8,34 +8,50 @@ useSeoMeta({
   title: "News"
 });
 
-const columns = [{
-  key: "title",
-  label: "Title",
-  sortable: true
-},
-{
-  key: "slug",
-  label: "URL"
-},
-{
-  key: "createdAt",
-  label: "Date created",
-  sortable: true
-}, {
-  key: "actions"
-}];
+const columns = [
+  {
+    key: "status"
+  },
+  {
+    key: "title",
+    label: "Title",
+    sortable: true
+  },
+  // {
+  //   key: "slug",
+  //   label: "URL"
+  // },
+  {
+    key: "author",
+    label: "Author"
+  },
+  {
+    key: "createdAt",
+    label: "Date created",
+    sortable: true
+  }, {
+    key: "actions"
+  }];
 
 const { page, limit } = usePagination();
-const { sortConfig, sortValue } = useSort();
+const { sortConfig, sortValue } = useSort({ column: "createdAt", direction: "desc" });
 const { q, qDebounced } = useQuery();
 
-const fields = ref(["title", "createdAt", "createdBy.firstName", "createdBy.lastName", "createdBy.email"]);
+const fields = ref([
+  "status",
+  "title",
+  "createdAt",
+  "slug",
+  "createdBy.firstName",
+  "createdBy.lastName",
+  "createdBy.email"
+]);
 
 const {
   data: news,
   count,
   status
-} = await useDataList<NewsPost[]>("/api/admin/news", { q: qDebounced, page, limit, sort: sortValue, fields });
+} = await useDataList<News[]>("/api/admin/news", { q: qDebounced, page, limit, sort: sortValue, fields });
 
 watch(q, () => page.value = 1);
 
@@ -50,7 +66,7 @@ function actionItems(_: any) {
 
 const resultsLabel = computed(() => formatResultLabel(count.value, limit.value));
 
-function getNewsUrl(row: NewsPost) {
+function getNewsUrl(row: News) {
   return `/news/${row.slug}`;
 }
 </script>
@@ -126,6 +142,22 @@ function getNewsUrl(row: NewsPost) {
         class="w-full"
         :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
       >
+        <template #title-data="{ row }">
+          <div class="flex flex-col">
+            <span class="text-gray-700 font-medium">{{ row.title }}</span>
+            <ULink
+              :to="getNewsUrl(row)"
+              inactive-class="text-primary"
+            >
+              {{ getNewsUrl(row) }}
+            </ULink>
+          </div>
+        </template>
+
+        <template #status-data="{ row }">
+          <NewsStatusBadge :status="row.status" />
+        </template>
+
         <template #createdAt-data="{ row }">
           <UTooltip :text="formatDate(row.createdAt, 'do MMM yyyy @ HH:mm')">
             {{ timeAgo(row.createdAt) }}
@@ -137,10 +169,16 @@ function getNewsUrl(row: NewsPost) {
             :to="getNewsUrl(row)"
             variant="link"
             size="sm"
-            trailing-icon="i-heroicons-link-20-solid"
           >
             /news/{{ row.slug }}
           </UButton>
+        </template>
+
+        <template #author-data="{ row }">
+          <div class="flex items-center gap-2">
+            <UAvatar size="xs" />
+            <span class="text-gray-900 font-medium">{{ row.createdBy.firstName }} {{ row.createdBy.lastName }}</span>
+          </div>
         </template>
 
         <template #actions-data="{ row }">

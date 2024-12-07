@@ -1,4 +1,6 @@
-﻿export default eventHandler(async (event) => {
+﻿import { eq } from "drizzle-orm";
+
+export default eventHandler(async (event) => {
   await requireUserSession(event);
 
   const queryColumns = [tables.events.title, tables.events.location];

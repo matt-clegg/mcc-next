@@ -2,6 +2,8 @@
 useHead({
   titleTemplate: title => title ? `${title} - MCC Next` : "MCC Next"
 });
+
+provideHeadlessUseId(() => useId());
 </script>
 
 <template>
