@@ -108,6 +108,23 @@ export function withColumns(
   return query;
 }
 
+export function mapRelations( data: { [p: string]: any }[]){
+  return data.map((item) => {
+    const result: any = {};
+    for (const key in item) {
+      if (key.includes("__")) {
+        const [relationName, fieldName] = key.split("__");
+        if (!result[relationName]) result[relationName] = {};
+        result[relationName][fieldName] = item[key];
+      }
+      else {
+        result[key] = item[key];
+      }
+    }
+    return result;
+  });
+}
+
 export async function getQueryData<T>(
   event: H3Event,
   source: SQLiteTable,
@@ -150,20 +167,7 @@ export async function getQueryData<T>(
     countQuery.execute()
   ]);
 
-  const mappedData = data.map((item) => {
-    const result: any = {};
-    for (const key in item) {
-      if (key.includes("__")) {
-        const [relationName, fieldName] = key.split("__");
-        if (!result[relationName]) result[relationName] = {};
-        result[relationName][fieldName] = item[key];
-      }
-      else {
-        result[key] = item[key];
-      }
-    }
-    return result;
-  });
+  const mappedData = mapRelations(data)
 
   return {
     data: mappedData,

@@ -3,12 +3,20 @@ const { data: folders, refresh, status } = await useFetch("/api/folders");
 
 const columns = [
   {
+    key: "id",
+    label: "id"
+  },
+  {
     key: "name",
     label: "Name"
   },
   {
     key: "path",
     label: "Path"
+  },
+  {
+    key: "parent",
+    label: "Parent"
   },
   {
     key: "actions"
@@ -40,6 +48,7 @@ function actionItems(row: any) {
 
 const newFolderName = ref("");
 const newFolderPath = ref("");
+const newFolderParent = ref<string| undefined>(undefined);
 
 async function addFolder() {
   if (!newFolderName.value || !newFolderPath.value) {
@@ -52,13 +61,15 @@ async function addFolder() {
       method: "POST",
       body: {
         name: newFolderName.value,
-        path: newFolderPath.value
+        path: newFolderPath.value,
+        parent: newFolderParent.value
       }
     });
 
     await refresh();
     newFolderName.value = "";
     newFolderPath.value = "";
+    newFolderParent.value = undefined;
   }
   catch (err) {
     console.error("Error adding folder", err);
@@ -94,6 +105,10 @@ async function addFolder() {
       <u-input
         v-model="newFolderPath"
         placeholder="Path"
+      />
+      <u-input
+          v-model="newFolderParent"
+          placeholder="Parent"
       />
       <u-button @click="addFolder">
         Add folder

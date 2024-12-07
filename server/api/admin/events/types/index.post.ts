@@ -9,6 +9,8 @@ export default eventHandler(async (event) => {
 
   const alias = slugify(body.name);
 
+  // TODO: Ignore self
+  
   const existing = await useDrizzle()
     .select({ alias: tables.eventTypes.alias })
     .from(tables.eventTypes)

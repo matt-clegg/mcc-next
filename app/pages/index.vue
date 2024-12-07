@@ -6,6 +6,8 @@ const password = ref("password");
 
 const fileInput = ref(null);
 
+const imagePickerModalOpen = ref(false);
+
 async function seal() {
   try {
     await $fetch("/api/medical-info", {
@@ -40,8 +42,11 @@ async function upload() {
   }
 
   try {
-    await $fetch("/api/assets?folder=eAxTNk3zXgzZ9iHP1RZ6C", {
+    await $fetch("/api/assets", {
       method: "POST",
+      query: {
+        // folder: "eAxTNk3zXgzZ9iHP1RZ6C"
+      },
       body: formData
     });
   }
@@ -98,6 +103,8 @@ const date = ref();
     </u-button>
     <UCard class="mt-10">
       <div class="space-y-4">
+        
+        <UButton label="Pick image" @click="imagePickerModalOpen = true" />
         <pre>{{ date }}</pre>
         <DatePicker
           v-model="date"
@@ -155,6 +162,7 @@ const date = ref();
       </div>
     </UCard>
 
+    <ImagePickerModal v-model:open="imagePickerModalOpen" />
     <!--    <roles-tester /> -->
   </UContainer>
 </template>
