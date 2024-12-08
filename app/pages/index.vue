@@ -1,16 +1,16 @@
 ﻿<script setup lang="ts">
 const { loggedIn, user, clear, fetch } = useUserSession();
 
-const email = ref("example@email.com");
-const password = ref("password");
+const email = ref( "example@email.com" );
+const password = ref( "password" );
 
-const fileInput = ref(null);
+const fileInput = ref( null );
 
-const imagePickerModalOpen = ref(false);
+const imagePickerModalOpen = ref( false );
 
 async function seal() {
   try {
-    await $fetch("/api/medical-info", {
+    await $fetch( "/api/medical-info", {
       method: "POST",
       body: {
         allergies: false,
@@ -18,76 +18,98 @@ async function seal() {
         diabetes: false,
         epilepsy: false,
         other: false,
-        details: ""
-      }
-    });
-  }
-  catch (err: any) {
-    console.error("Error sealing", err);
+        details: "",
+      },
+    } );
+  } catch ( err: any ) {
+    console.error( "Error sealing", err );
   }
 }
 
 async function upload() {
-  console.log("f", fileInput.value);
+  console.log( "f", fileInput.value );
   const files = fileInput.value?.input.files;
-  if (!files || files.length === 0) {
-    console.error("No files selected");
+  if ( !files || files.length === 0 ) {
+    console.error( "No files selected" );
     return;
   }
 
   const formData = new FormData();
   let i = 0;
-  for (const file of files) {
-    formData.append(`file[${i++}]`, file);
+  for ( const file of files ) {
+    formData.append( `file[${ i++ }]`, file );
   }
 
   try {
-    await $fetch("/api/assets", {
+    await $fetch( "/api/assets", {
       method: "POST",
       query: {
         // folder: "eAxTNk3zXgzZ9iHP1RZ6C"
       },
-      body: formData
-    });
-  }
-  catch (err: any) {
-    handleFetchError(err);
+      body: formData,
+    } );
+  } catch ( err: any ) {
+    handleFetchError( err );
   }
 }
 
 async function login() {
   try {
-    await $fetch("/api/auth/login", {
+    await $fetch( "/api/auth/login", {
       method: "POST",
       body: {
         email: email.value,
-        password: password.value
-      }
-    });
+        password: password.value,
+      },
+    } );
     await fetch();
-  }
-  catch (err: any) {
-    handleFetchError(err);
+  } catch ( err: any ) {
+    handleFetchError( err );
   }
 }
 
 async function register() {
   try {
-    await $fetch("/api/auth/register", {
+    await $fetch( "/api/auth/register", {
       method: "POST",
       body: {
         email: email.value,
-        password: password.value
-      }
-    });
+        password: password.value,
+      },
+    } );
     await fetch();
-  }
-  catch (err: any) {
-    handleFetchError(err);
+  } catch ( err: any ) {
+    handleFetchError( err );
   }
 }
 
 const date = ref();
+
+const selectedAsset = ref();
+
+function onSelectedAsset( assetId: string ) {
+  selectedAsset.value = assetId;
+}
+
+const form = [
+  {
+    type: "text",
+    label: "First name",
+    id: "first-name",
+    key: "firstName",
+    placeholder: "Enter your first name",
+    required: true
+  },
+  {
+    type: "text",
+    label: "Last name",
+    id: "last-name",
+    key: "lastName",
+    placeholder: "Enter your last name",
+    required: true
+  }
+]
+
 </script>
 
 <template>
@@ -103,15 +125,16 @@ const date = ref();
     </u-button>
     <UCard class="mt-10">
       <div class="space-y-4">
-        
-        <UButton label="Pick image" @click="imagePickerModalOpen = true" />
+
+        <UButton label="Pick image" @click="imagePickerModalOpen = true"/>
+        {{ selectedAsset }}
         <pre>{{ date }}</pre>
         <DatePicker
-          v-model="date"
-          mode="dateTime"
+            v-model="date"
+            mode="dateTime"
         />
 
-        <DateRangePicker />
+        <DateRangePicker/>
 
         <template v-if="loggedIn">
           <!--          <RichTextEditor /> -->
@@ -126,9 +149,9 @@ const date = ref();
           <!--          /> -->
 
           <u-input
-            ref="fileInput"
-            type="file"
-            multiple
+              ref="fileInput"
+              type="file"
+              multiple
           />
           <u-button @click="upload">
             Upload
@@ -143,12 +166,12 @@ const date = ref();
         </template>
         <template v-else>
           <u-input
-            v-model="email"
-            type="email"
+              v-model="email"
+              type="email"
           />
           <u-input
-            v-model="password"
-            type="password"
+              v-model="password"
+              type="password"
           />
 
           <u-button @click="login">
@@ -162,7 +185,11 @@ const date = ref();
       </div>
     </UCard>
 
-    <ImagePickerModal v-model:open="imagePickerModalOpen" />
+    <AssetPickerModal v-model:open="imagePickerModalOpen"
+                      :selected-asset="selectedAsset"
+                      asset-type="image"
+                      @selected="onSelectedAsset"/>
     <!--    <roles-tester /> -->
+    
   </UContainer>
 </template>

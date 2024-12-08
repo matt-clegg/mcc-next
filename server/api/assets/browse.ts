@@ -1,28 +1,39 @@
 ﻿import { z } from "zod";
 import { eq, getTableColumns, isNull } from "drizzle-orm";
 
-export default eventHandler(async (event) => {
-  const { folder } = await getValidatedQuery(event, z.object({
-    folder: z.string().optional()
-  }).parse);
+export default eventHandler( async ( event ) => {
+  const { folder, type, showFolders } = await getValidatedQuery( event, z.object( {
+    folder: z.string().optional(),
+    type: z.string().optional(),
+    showFolders: z.enum( ["true", "false"] ).optional(),
+  } ).parse );
 
-  const { path, owner, ...rest } = getTableColumns(tables.assets);
+  const { path, owner, ...rest } = getTableColumns( tables.assets );
 
   const relations = {
     owner: {
       table: tables.users,
-      on: eq(tables.assets.owner, tables.users.id)
-    }
+      on: eq( tables.assets.owner, tables.users.id ),
+    },
   };
 
-  const fields = [...Object.keys(rest), "owner.id", "owner.firstName", "owner.lastName"];
+  const fields = [...Object.keys( rest ), "owner.id", "owner.firstName", "owner.lastName"];
 
-  const query = withColumns(useDrizzle(), tables.assets, fields, relations);
+  const query = withColumns( useDrizzle(), tables.assets, fields, relations );
 
   // withPagination(query, page, limit);
+  if ( type ) {
+    if ( type === "image" ) {
+      query.where( eq( tables.assets.isImage, true ) );
+    } else if ( type === "files" ) {
+      query.where( eq( tables.assets.isImage, false ) );
+    } else {
+      query.where( eq( tables.assets.mimeType, type ) );
+    }
+  }
 
-  if (folder) {
-    query.where(eq(tables.assets.folder, folder));
+  if ( folder ) {
+    query.where( eq( tables.assets.folder, folder ) );
   }
 
   // if (sort) {
@@ -34,42 +45,28 @@ export default eventHandler(async (event) => {
 
   const result = await query.execute();
 
-  const assets = mapRelations(result);
+  const assets = mapRelations( result );
 
-  // const folders = await useDrizzle()
-  //   .select()
-  //   .from(tables.folders)
-  //   .where(eq(tables.folders.parent, folder || null));
-
-  let folders: Folder[];
+  let folders: Folder[] = [];
   const paths: string[] = [];
 
-  if (folder) {
-    folders = await useDrizzle()
+  if ( showFolders && showFolders === "true" ) {
+    if ( folder ) {
+      folders = await useDrizzle()
       .select()
-      .from(tables.folders)
-      .where(eq(tables.folders.parent, folder));
-
-    // const currentFolder = await useDrizzle()
-    //   .select({ path: tables.folders.path })
-    //   .from(tables.folders)
-    //   .where(eq(tables.folders.id, folder))
-    //   .get();
-    //
-    // if (currentFolder) {
-    //   currentPath += currentFolder.path;
-    // }
-  }
-  else {
-    folders = await useDrizzle()
+      .from( tables.folders )
+      .where( eq( tables.folders.parent, folder ) );
+    } else {
+      folders = await useDrizzle()
       .select()
-      .from(tables.folders)
-      .where(isNull(tables.folders.parent));
+      .from( tables.folders )
+      .where( isNull( tables.folders.parent ) );
+    }
   }
 
   return {
     assets,
     folders,
-    paths
+    paths,
   };
-});
+} );

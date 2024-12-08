@@ -11,6 +11,7 @@ export const folders = sqliteTable("folders", {
   parent: text("parent_id").references((): AnySQLiteColumn => folders.id, { onDelete: "cascade" }),
   fullPath: text("full_path").notNull(),
   hidden: integer("hidden", { mode: "boolean" }).notNull().default(false),
+  system: integer("system", { mode: "boolean" }).notNull().default(false),
   createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
 });
 
