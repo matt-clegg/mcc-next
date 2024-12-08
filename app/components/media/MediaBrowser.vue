@@ -1,141 +1,187 @@
 ﻿<script setup lang="ts">
-import { formatDistanceToNow } from "date-fns";
-
 const props = defineProps<{
-  folder?: string
+  folder?: string;
 }>();
 
 const sortOptions = [
   {
     label: "Name",
-    value: "name",
+    value: "name"
   },
   {
     label: "Date added",
-    value: "date",
-  },
-];
-
-const sortOption = ref( sortOptions[1] );
-const sortDir = ref( true );
-
-const sortValue = computed( () => {
-  if ( sortOption.value ) {
-    const prefix = sortDir.value ? "-" : "";
-    return prefix + sortOption.value.value;
+    value: "date"
   }
-  return undefined;
-} );
+];
+//
+// const sortOption = ref(sortOptions[1]);
+// const sortDir = ref(true);
 
-const { data: images, status } = await useFetch( "/api/assets", {
+const currentFolder = ref<string | undefined>(props.folder);
+const previousFolder = ref<string | undefined>(undefined);
+
+// const sortValue = computed(() => {
+//   if (sortOption.value) {
+//     const prefix = sortDir.value ? "-" : "";
+//     return prefix + sortOption.value.value;
+//   }
+//   return undefined;
+// });
+
+const { data, status, refresh } = await useFetch<{
+  assets: Asset[];
+  folders: Folder[];
+  currentPath: string;
+}>("/api/assets/browse", {
+  lazy: true,
   query: {
-    sort: sortValue,
-    folder: props.folder,
+    // sort: sortValue,
+    folder: currentFolder
   },
-} );
+  default: () => ({ assets: [], folders: [], currentPath: "" })
+});
 
-// const {data: folders, refresh} = await useFetch("/api/folders");
+const assets = computed(() => data.value.assets);
+const folders = computed(() => data.value.folders);
+const paths = computed(() => data.value.paths);
 
-const sortIcon = computed( () => sortDir.value ? "i-heroicons-bars-arrow-up" : "i-heroicons-bars-arrow-down" );
+// const { data: images, refresh: refreshAssets } = await useFetch("/api/assets", {
+//   query: {
+//     sort: sortValue,
+//     folder: currentFolder
+//   }
+// });
 
-const disableSort = computed( () => status.value === "pending" );
+// const { data: folders, refresh: refreshFolders } = await useFetch("/api/folders", {
+//   query: {
+//     parent: currentFolder
+//   }
+// });
+
+const combinedAssets = computed(() => {
+  const result: Asset[] = [];
+
+  if (folders.value?.length) {
+    result.push(...folders.value.map(f => ({
+      id: f.id,
+      filename: f.name,
+      mimeType: "folder",
+      size: 0,
+      owner: null,
+      folder: f.parent,
+      isImage: false,
+      createdAt: new Date(f.createdAt)
+    })));
+  }
+
+  if (assets.value?.length) {
+    result.push(...assets.value);
+  }
+
+  return result;
+});
+
+async function onSelect(assetId: string) {
+  const asset = combinedAssets.value.find(a => a.id === assetId);
+  if (asset) {
+    const isFolder = asset.mimeType === "folder";
+    console.log("is folder", isFolder);
+    if (isFolder) {
+      previousFolder.value = currentFolder.value;
+      currentFolder.value = asset.id;
+
+      await refresh();
+    }
+  }
+}
+
+function selectBreadcrumbFolder(name: string) {
+  const folder = folders.value?.find(f => f.name === name);
+  console.log("FOLDER", folder);
+}
+
+const breadcrumbLinks = computed(() => {
+  // const result = [
+  //   {
+  //     label: "Root"
+  //   }
+  // ];
+  //
+  // if (currentFolder.value) {
+  //   const folder = folders.value?.find(f => f.parent === currentFolder.value);
+  //   if (folder) {
+  //     const parts = folder.path.split("/");
+  //     result.push(...parts.map(p => ({
+  //       label: p
+  //     })));
+  //   }
+  // }
+  //
+  // return result;
+
+  // return path.value.split("/").map(p => ({
+  //   label: p,
+  //   click: () => selectBreadcrumbFolder(p)
+  // }));
+
+  return [{
+    label: "root"
+  }];
+});
+
+async function deleteAsset(assetId: string) {
+  try {
+    await $fetch(`/api/assets/${assetId}`, {
+      method: "DELETE"
+    });
+
+    await refresh();
+  }
+  catch (err: any) {
+    handleFetchError(err);
+  }
+}
 </script>
 
 <template>
   <div class="space-y-4">
-    <UBreadcrumb
+    <div class="flex gap-2 items-center">
+      <UBreadcrumb
         divider="/"
-        :links="[{ label: 'Home', to: '/' }, { label: 'Navigation' }, { label: 'Breadcrumb' }]"
-    />
-    <div class="max-h-[600px] overflow-y-auto">
-      <div class="columns-1 md:columns-3xs gap-3 space-y-3">
+        :links="breadcrumbLinks"
+      />
+      <UButton
+        v-if="currentFolder"
+        label="Back"
+        icon="i-heroicons-arrow-long-left"
+        variant="ghost"
+        @click="currentFolder = previousFolder"
+      />
+    </div>
+    <div class="sm:h-[600px] overflow-y-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 ">
+        <template v-if="status === 'pending'">
+          <div
+            v-for="index in 9"
+            :key="index"
+          >
+            <USkeleton class="w-full h-[70px] sm:h-[269px]" />
+          </div>
+        </template>
         <div
-            v-for="image in images"
-            :key="image.id"
-            class="cursor-pointer"
+          v-for="asset in combinedAssets"
+          v-else
+          :key="asset.id"
+          class="cursor-pointer"
         >
-
-          <MediaPreview :asset="image"/>
-          <!--        <NuxtImg-->
-          <!--            class="w-full"-->
-          <!--            :src="image.id"-->
-          <!--            provider="local"-->
-          <!--            width="300"-->
-          <!--            height="200"-->
-          <!--            :alt="image.filename"/>-->
-          <!--        <div class="p-2 rounded-b-lg border border-t-0 border-gray-200 flex flex-col gap-2">-->
-
-          <!--          &lt;!&ndash;          <UIcon name="i-heroicons-photo" class="w-5 h-5 mr-2"/>&ndash;&gt;-->
-          <!--          <strong>{{ image.filename }}</strong>-->
-          <!--          <small>Uploaded {{ timeAgo( image.createdAt ) }}</small>-->
-          <!--        </div>-->
+          <MediaPreview
+            :asset="asset"
+            @select="onSelect"
+          />
         </div>
       </div>
     </div>
   </div>
-  <!--  <div class="flex gap-3 flex-col mt-4 sm:mt-0">-->
-  <!--    <div class="flex gap-2 px-4 items-center">-->
-  <!--      <small class="text-gray-700">Sort by</small>-->
-  <!--      <u-select-menu-->
-  <!--        v-model="sortOption"-->
-  <!--        :options="sortOptions"-->
-  <!--        placeholder="Sort by"-->
-  <!--        :disabled="disableSort"-->
-  <!--        class="min-w-[175px]"-->
-  <!--      />-->
-  <!--      <u-tooltip text="Toggle between ascending and descending order">-->
-  <!--        <u-button-->
-  <!--          :icon="sortIcon"-->
-  <!--          variant="outline"-->
-  <!--          :disabled="!sortOption || disableSort"-->
-  <!--          @click="sortDir = !sortDir"-->
-  <!--        />-->
-  <!--      </u-tooltip>-->
-  <!--    </div>-->
-  <!--    <div class="flex-1 flex flex-col w-full">-->
-  <!--      <ul-->
-  <!--        v-if="images?.length"-->
-  <!--        role="list"-->
-  <!--        class="grid grid-cols-2 gap-x-4 gap-y-8 px-4 overflow-y-auto h-[337px]"-->
-  <!--      >-->
-  <!--        <li-->
-  <!--          v-for="image in images"-->
-  <!--          :key="image.id"-->
-  <!--          class="relative"-->
-  <!--        >-->
-  <!--          <div class="group cursor-pointer overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">-->
-  <!--            <nuxt-img-->
-  <!--              :src="image.id"-->
-  <!--              provider="local"-->
-  <!--              placeholder-->
-  <!--              sizes="300px sm:230px"-->
-  <!--              alt=""-->
-  <!--              class="pointer-events-none aspect-[10/7] w-full object-cover group-hover:opacity-75"-->
-  <!--            >-->
-  <!--              <button-->
-  <!--                type="button"-->
-  <!--                class="absolute inset-0 focus:outline-none"-->
-  <!--              >-->
-  <!--                <span class="sr-only">View details for {{ image.filename }}</span>-->
-  <!--              </button>-->
-  <!--            </nuxt-img>-->
-  <!--          </div>-->
-  <!--          <p class="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">-->
-  <!--            {{ image.filename }}-->
-  <!--          </p>-->
-  <!--          <p class="pointer-events-none block text-sm font-medium text-gray-500">-->
-  <!--            {{ timeAgo(image.createdAt) }}-->
-  <!--          </p>-->
-  <!--        </li>-->
-  <!--      </ul>-->
-  <!--      <div-->
-  <!--        v-else-->
-  <!--        class="flex justify-center items-center w-full h-[337px]"-->
-  <!--      >-->
-  <!--        No media found-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
 </template>
 
 <style scoped>

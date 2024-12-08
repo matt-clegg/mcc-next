@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
   }).parse);
 
   const { path, owner, ...rest } = getTableColumns(tables.assets);
-  
+
   // const query = useDrizzle()
   //   .select({...rest})
   //   .from(tables.assets)
@@ -23,8 +23,8 @@ export default eventHandler(async (event) => {
       on: eq(tables.assets.owner, tables.users.id)
     }
   };
-  
-  const fields = [...Object.keys(rest), "owner.firstName", "owner.lastName"];
+
+  const fields = [...Object.keys(rest), "owner.id", "owner.firstName", "owner.lastName"];
 
   const query = withColumns(useDrizzle(), tables.assets, fields, relations);
 
@@ -42,6 +42,6 @@ export default eventHandler(async (event) => {
   }
 
   const result = await query.execute();
-  
+
   return mapRelations(result);
 });

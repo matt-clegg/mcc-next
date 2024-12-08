@@ -3,8 +3,8 @@ const props = defineProps<{
   mimeType: string;
 }>();
 
-const icon = computed( () => {
-  switch ( props.mimeType ) {
+const icon = computed(() => {
+  switch (props.mimeType) {
     case "image/jpeg":
     case "image/png":
       return "mdi-image";
@@ -12,11 +12,12 @@ const icon = computed( () => {
       return "formkit:filepdf";
     case "video/mp4":
       return "mdi-video";
+    case "folder":
+      return "i-heroicons-folder";
     default:
       return "mdi-file";
   }
-} );
-
+});
 </script>
 
 <template>
