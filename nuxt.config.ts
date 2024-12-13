@@ -14,6 +14,16 @@ export default defineNuxtConfig({
     "nuxt-headlessui"
   ],
 
+  components: [
+    {
+      path: "~/components"
+    },
+    {
+      path: "~/components/ui",
+      pathPrefix: false
+    }
+  ],
+
   devtools: { enabled: true },
 
   colorMode: {

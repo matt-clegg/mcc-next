@@ -2,6 +2,7 @@
 import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 
 export const pages = sqliteTable("pages", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
@@ -10,7 +11,7 @@ export const pages = sqliteTable("pages", {
   url: text("path").notNull(),
   blocks: text("blocks", { mode: "json" }).notNull(),
   parent: text("parent_id").references((): AnySQLiteColumn => pages.id, { onDelete: "set null" }),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });
 
 export const pagesRelations = relations(pages, ({ one }) => ({

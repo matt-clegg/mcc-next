@@ -1,14 +1,14 @@
 ﻿import { sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import users from "./users";
 
 export const medicalInfo = sqliteTable("medical_info", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
   user: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   data: text("data").notNull(),
-  createdAt: text("created_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`),
-  updatedAt: text("updated_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`).$onUpdateFn(() => sql`datetime(current_timestamp)`)
+  ...timestampColumns
 });
 
 export const medicalInfoRelations = relations(medicalInfo, ({ one }) => ({

@@ -1,6 +1,7 @@
 ﻿import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import assets from "./assets";
 
 export const transforms = sqliteTable("transforms", {
@@ -16,7 +17,7 @@ export const transforms = sqliteTable("transforms", {
   format: text("format"),
   quality: integer("quality"),
   blur: integer("blur"),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });
 
 export const transformsRelations = relations(transforms, ({ one }) => ({

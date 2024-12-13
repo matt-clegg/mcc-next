@@ -1,32 +1,65 @@
 ﻿[
   {
+    "name": "Junior",
+    "alias": "junior",
+    "type": "public",
+    "visibility": "public",
+    "priority": 3
+  },
+  {
+    "name": "Junior non-member",
+    "alias": "junior-non-member",
+    "type": "public",
+    "visibility": "public",
+    "priority": 1
+  },
+  {
+    "name": "Member",
+    "alias": "member",
+    "type": "public",
+    "visibility": "public",
+    "priority": 2
+  },
+  {
+    "name": "Non-member",
+    "alias": "non-member",
+    "type": "public",
+    "visibility": "public",
+    "priority": 1
+  },
+  {
     "name": "Editor",
     "alias": "editor",
-    "isPublic": true,
-    "priority": 1
+    "type": "administrative",
+    "visibility": "internal",
+    "priority": 2
   },
   {
     "name": "Coach",
     "alias": "coach",
-    "isPublic": true,
+    "type": "public",
+    "visibility": "public",
     "priority": 2
   },
   {
     "name": "User Manager",
     "alias": "manage-users",
-    "isPublic": false,
+    "type": "administrative",
+    "visibility": "internal",
     "priority": 0
   },
   {
     "name": "Event Manager",
     "alias": "manage-events",
-    "isPublic": false,
+    "type": "administrative",
+    "visibility": "internal",
     "priority": 0
   },
   {
     "name": "Committee",
     "alias": "committee",
-    "isPublic": true,
+    "type": "public",
+    "visibility": "public",
     "priority": 3
   }
 ]

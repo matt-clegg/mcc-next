@@ -1,6 +1,7 @@
 ﻿import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import { users } from "./users";
 
 export const memberships = sqliteTable("memberships", {
@@ -10,7 +11,8 @@ export const memberships = sqliteTable("memberships", {
   billingCycle: text("billing_cycle", { enum: ["monthly", "annually"] }).notNull(),
   startDate: text("start_date").notNull(),
   nextBillingDate: text("next_billing_date").notNull(),
-  active: integer("status", { mode: "boolean" }).default(true)
+  active: integer("status", { mode: "boolean" }).default(true),
+  ...timestampColumns
 });
 
 export const membershipRelationships = relations(memberships, ({ one }) => ({

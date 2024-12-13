@@ -2,6 +2,7 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import pages from "./pages";
 import { roles } from "./roles";
 
@@ -12,7 +13,7 @@ export const navigation = sqliteTable("navigation", {
   page: text("page_id").references(() => pages.id, { onDelete: "cascade" }),
   url: text("url").notNull(),
   order: integer("order").notNull(),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });
 
 export const navigationRoles = sqliteTable("navigation_roles", {

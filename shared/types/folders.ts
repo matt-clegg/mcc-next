@@ -5,7 +5,7 @@ export type Folder = {
   path: string;
   name: string;
   parent: string | null;
-  permissions?: FolderPermission[];
+  permissions: FolderPermission[] | null;
   createdAt: string;
 };
 

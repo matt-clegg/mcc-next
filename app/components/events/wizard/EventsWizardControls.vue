@@ -1,5 +1,5 @@
 ﻿<script setup lang="ts">
-const emits = defineEmits(["prev", "advance"]);
+const emits = defineEmits(["prev", "next"]);
 
 const props = defineProps<{
   event: EventItem;
@@ -33,22 +33,26 @@ function onPrev() {
   emits("prev");
 }
 
-function onAdvance() {
-  if (props.currentStepIsLast) {
-    return;
-  }
-
-  props.validator?.validate();
-  if (internalIsValid.value) {
-    emits("advance");
-  }
+function onNext() {
+  // console.log("click", props.currentStepIsLast);
+  // if (props.currentStepIsLast) {
+  //   console.log("is last");
+  //   return;
+  // }
+  //
+  // console.log("validating", props.validator);
+  // props.validator?.validate();
+  // if (internalIsValid.value) {
+  //   emits("next");
+  // }
 }
 
 async function submit() {
-  props.validator?.validate();
-  if (internalIsValid.value) {
-    await props.onSubmit();
-  }
+  // console.log("click");
+  // props.validator?.validate();
+  // if (internalIsValid.value) {
+  //   await props.onSubmit();
+  // }
 }
 </script>
 
@@ -65,7 +69,8 @@ async function submit() {
       <UButton
         :action="currentStepIsLast && internalIsValid ? submit : undefined"
         :keep-loading="currentStepIsLast"
-        @click="onAdvance"
+        type="submit"
+        @click="onNext"
       >
         {{ nextButtonLabel }}
       </UButton>

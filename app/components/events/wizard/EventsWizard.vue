@@ -1,20 +1,31 @@
 ﻿<script setup lang="ts">
 import {
   EventsWizardStepType,
-  EventsWizardStepCompliance,
-  EventsWizardStepBasics
+  // EventsWizardStepCompliance,
+  EventsWizardStepBasics,
+  EventsWizardStepPricing,
+  EventsWizardStepSingleDate,
+  EventsWizardStepRecurring
 } from "#components";
 import type { WizardStep } from "~/types/wizard";
+
+const { data: roles } = await useFetch("/api/roles", {
+  default: () => []
+});
 
 const props = defineProps<{
   events?: EventItem[];
 }>();
 
-const newEvent = ref(initialEventItem());
+const {
+  newEvent
+} = useEventWizard();
+
+// const newEvent = ref(initialEventItem());
 
 const isEditMode = ref(false);
 
-const steps = computed(() => {
+const steps = computed<WizardStep[]>(() => {
   const result: WizardStep[] = [];
 
   if (!isEditMode.value) {
@@ -25,29 +36,43 @@ const steps = computed(() => {
   }
 
   result.push(
-    {
-      id: "compliance",
-      component: EventsWizardStepCompliance
-    },
+    // {
+    //   id: "compliance",
+    //   component: EventsWizardStepCompliance
+    // },
     {
       id: "basics",
       component: EventsWizardStepBasics
+    },
+    {
+      id: "pricing",
+      component: EventsWizardStepPricing
     }
   );
+
+  if (newEvent.value.occurrenceType === "single") {
+    result.push({
+      id: "single",
+      component: EventsWizardStepSingleDate
+    });
+  }
+  else if (newEvent.value.occurrenceType === "multi") {
+
+  }
+  else if (newEvent.value.occurrenceType === "recurring") {
+    result.push({
+      id: "recurring",
+      component: EventsWizardStepRecurring
+    });
+  }
 
   return result;
 });
 
 const currentStepIndex = ref(0);
-const currentStep = computed(() => steps.value[currentStepIndex.value]);
-const currentStepIsLast = computed(() => currentStepIndex.value === steps.value.length - 1);
-
-function initialEventItem() {
-  if (props.events?.length) {
-    return props.events[0];
-  }
-  return {};
-}
+const currentStep = computed(() => steps.value[currentStepIndex.value]!);
+const isFirstStep = computed(() => currentStepIndex.value === 0);
+const isLastStep = computed(() => currentStepIndex.value === steps.value.length - 1);
 
 async function onSubmit() {
   try {
@@ -63,10 +88,38 @@ async function onSubmit() {
   }
 }
 
+function onBack() {
+  currentStepIndex.value -= 1;
+
+  if (currentStep.value.disabled) {
+    onBack();
+  }
+}
+
+async function onNext() {
+  console.log("next");
+  if (!isLastStep.value) {
+    currentStepIndex.value += 1;
+
+    if (currentStep.value.disabled) {
+      await onNext();
+    }
+  }
+  else {
+    await onSubmit();
+  }
+}
+
 async function createEvent() {
-  await $fetch("/api/events", {
-    method: "POST"
-  });
+  try {
+    await $fetch("/api/events", {
+      method: "POST",
+      body: newEvent.value
+    });
+  }
+  catch (err: any) {
+    handleFetchError(err);
+  }
 }
 
 async function updateEvent() {
@@ -88,19 +141,16 @@ async function updateEvent() {
         :steps="steps"
       />
     </div>
-    <div class="m-auto max-w-xl space-y-8">
+    <div class="m-auto max-w-xl space-y-8 px-4 py-5 sm:p-6">
       <component
         :is="currentStep.component"
         v-model="newEvent"
-      >
-        <EventsWizardControls
-          :event="newEvent"
-          :current-step-index="currentStepIndex"
-          :current-step-is-last="currentStepIsLast"
-          :is-edit-mode="isEditMode"
-          :on-submit="onSubmit"
-        />
-      </component>
+        :is-first-step="isFirstStep"
+        :is-last-step="isLastStep"
+        :roles="roles"
+        @back="onBack"
+        @next="onNext"
+      />
     </div>
   </div>
 </template>

@@ -10,7 +10,4 @@ export default eventHandler(async (event) => {
   await useDrizzle()
     .delete(tables.roles)
     .where(eq(tables.roles.id, id));
-
-  // Invalidate the all roles cache
-  await useStorage("cache").removeItem("nitro:functions:list-roles:all.json");
 });

@@ -13,15 +13,9 @@ export default eventHandler(async (event) => {
     alias: kebabCase(body.name)
   };
 
-  const result = await useDrizzle()
+  return useDrizzle()
     .insert(tables.roles)
     .values(role)
     .returning()
     .get();
-
-  // Invalidate the all roles cache
-  console.log("invalidating all roles cache");
-  await useStorage("cache").removeItem("nitro:functions:list-roles:all.json");
-
-  return result;
 });

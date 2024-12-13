@@ -1,6 +1,7 @@
 ﻿import { sqliteTable, text, index } from "drizzle-orm/sqlite-core";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import users from "./users";
 
 export const news = sqliteTable("news", {
@@ -10,8 +11,7 @@ export const news = sqliteTable("news", {
   content: text("content", { mode: "json" }),
   status: text("status", { enum: ["draft", "published", "scheduled"] }).notNull().default("draft"),
   createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
-  createdAt: text("created_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`),
-  updatedAt: text("updated_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`).$onUpdateFn(() => sql`datetime(current_timestamp)`)
+  ...timestampColumns
 }, news => ({
   slugIdx: index("ix_news_slug").on(news.slug)
 }));

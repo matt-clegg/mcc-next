@@ -1,5 +1,6 @@
 ﻿import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import users from "./users";
 
 export const folders = sqliteTable("payments", {
@@ -9,5 +10,5 @@ export const folders = sqliteTable("payments", {
   totalAmount: integer("total_amount").notNull(),
   paymentType: text("payment_type").notNull(),
   status: text("status", { enum: ["pending", "paid", "failed"] }).notNull(),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });

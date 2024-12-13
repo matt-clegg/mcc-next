@@ -1,6 +1,7 @@
 ﻿import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import users from "./users";
 
 export const galleries = sqliteTable("galleries", {
@@ -9,7 +10,7 @@ export const galleries = sqliteTable("galleries", {
   slug: text("path").notNull(),
   description: text("description"),
   createdBy: text("created_by").references(() => users.id, { onDelete: "set null" }),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });
 
 export const galleriesRelations = relations(galleries, ({ one }) => ({

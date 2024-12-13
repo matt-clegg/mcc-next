@@ -1,6 +1,7 @@
 ﻿import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import folders from "./folders";
 import users from "./users";
 import { roles } from "./roles";
@@ -10,7 +11,7 @@ export const folderPermissions = sqliteTable("folder_permissions", {
   folder: text("folder_id").notNull().references(() => folders.id, { onDelete: "cascade" }),
   user: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   role: text("role_id").references(() => roles.id, { onDelete: "cascade" }),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });
 
 export const folderPermissionRelations = relations(folderPermissions, ({ one }) => ({

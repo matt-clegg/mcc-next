@@ -1,9 +1,30 @@
 ﻿<script setup lang="ts">
-import { add } from "date-fns";
+import { format, isSameDay, isSameMonth, isSameYear } from "date-fns";
+
+const route = useRoute();
+const id = route.params.id as string;
+
+const { data } = await useFetch<EventItem>(`/api/events/${id}`);
+
+if (!data.value) {
+  throw createError({
+    statusCode: 404,
+    message: "Event not found"
+  });
+}
+
+const event = computed<EventItem>(() => data.value!);
 
 const bookModalOpen = ref(false);
 
-const lastBookingDate = ref<number | null>(add(new Date(), { hours: 1, seconds: 10 }).getTime());
+const lastBookingDate = computed<number | null>(() => {
+  if (event.value.lastBookingDate) {
+    return new Date(event.value.lastBookingDate).getTime();
+  }
+
+  return new Date(event.value.startDate).getTime();
+});
+
 const timeLeftToBook = ref<number>(0);
 
 function updateTimeLeft() {
@@ -44,11 +65,11 @@ const formattedTimeLeft = computed(() => {
   const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
   const seconds = totalSeconds % 60;
 
-  const parts = [];
-
   if (days > 0) {
-    parts.push(`${days}d`);
+    return days === 1 ? "1 day" : `${days} days`;
   }
+
+  const parts = [];
 
   if (hours > 0) {
     parts.push(`${hours}h`);
@@ -66,6 +87,32 @@ const formattedTimeLeft = computed(() => {
 });
 
 const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook.value / 1000 < 1);
+
+const formattedDate = computed(() => {
+  const start = new Date(event.value.startDate);
+  const end = new Date(event.value.endDate);
+
+  if (isSameDay(start, end)) {
+    return format(start, "do MMM, yyyy");
+  }
+
+  if (isSameMonth(start, end) && isSameYear(start, end)) {
+    return `${format(start, "do")} - ${format(end, "do MMM, yyyy")}`;
+  }
+
+  if (isSameYear(start, end)) {
+    return `${format(start, "do MMM")} - ${format(end, "do MMM, yyyy")}`;
+  }
+
+  return `${format(start, "do MMM, yyyy")} - ${format(end, "do MMM, yyyy")}`;
+});
+
+const formatTime = computed(() => {
+  const start = event.value.startDate;
+  const end = event.value.endDate;
+
+  return `${format(start, "h:mma")} - ${format(end, "h:mma")}`.toLowerCase();
+});
 </script>
 
 <template>
@@ -82,7 +129,7 @@ const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook
       <div class="z-10 text-white">
         <UContainer :ui="{ constrained: 'max-w-5xl' }">
           <h2 class="font-bold text-2xl md:text-3xl mb-2">
-            Regular Club Paddle
+            {{ event.title }}
           </h2>
 
           <div class="text-sm flex gap-3 flex-wrap">
@@ -92,7 +139,7 @@ const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook
                 class="size-5"
               />
               <span>
-                Maidstone Canoe Club
+                {{ event.location }}
               </span>
             </div>
 
@@ -104,7 +151,7 @@ const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook
                 class="size-5"
               />
               <span>
-                6th - 12th Jan, 2024
+                {{ formattedDate }}
               </span>
             </div>
 
@@ -116,7 +163,7 @@ const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook
                 class="size-5"
               />
               <span>
-                8:00am - 9:00am
+                {{ formatTime }}
               </span>
             </div>
           </div>
@@ -128,38 +175,12 @@ const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook
       <div class="grid lg:grid-cols-12 gap-6">
         <div class="md:col-span-8 space-y-6">
           <div class="prose">
-            <p>Our regular weekly paddle sessions for members both new and experienced.</p>
-
-            <p>
-              If you're a newer member or would like some support on the water, please use the booking form below and
-              one of
-              our PAAs will meet you for a paddle. If you're confident in your ability to paddle independently with the
-              main
-              group, please don't use the booking form - just turn up - and leave the spaces for those who need it.
-            </p>
+            <SanitizeHtml :html="event.description" />
           </div>
         </div>
 
         <div class="md:col-span-4 space-y-4">
-          <!--          <div class="p-4 border border-gray-200 rounded-lg flex flex-col gap-4"> -->
-          <!--            <div class="flex flex-col gap-3"> -->
-          <!--              <strong>Multi-day event</strong> -->
-          <!--              <p>This event occurs over multiple days.</p> -->
-          <!--              <ul class="flex flex-col"> -->
-          <!--                <li class="flex items-center gap-2"> -->
-          <!--                  6th Jan, 2024 <small>@</small> 8:00am - 9:00am -->
-          <!--                </li> -->
-          <!--                <li class="flex items-center gap-2"> -->
-          <!--                  10th Jan, 2024 <small>@</small> 8:00am - 9:00am -->
-          <!--                </li> -->
-          <!--                <li class="flex items-center gap-2"> -->
-          <!--                  15th Jan, 2024 <small>@</small> 8:00am - 9:00am -->
-          <!--                </li> -->
-          <!--              </ul> -->
-          <!--            </div> -->
-          <!--          </div> -->
-
-          <EventsInfo />
+          <EventsInfo :event="event" />
 
           <div class="relative">
             <template v-if="lastBookingDate">

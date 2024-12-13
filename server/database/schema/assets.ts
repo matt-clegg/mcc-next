@@ -1,6 +1,7 @@
 ﻿import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import users from "./users";
 import folders from "./folders";
 import transforms from "./transforms";
@@ -14,7 +15,7 @@ export const assets = sqliteTable("assets", {
   owner: text("owner_id").notNull().references(() => users.id, { onDelete: "set null" }),
   folder: text("folder_id").references(() => folders.id, { onDelete: "cascade" }),
   isImage: integer("is_image", { mode: "boolean" }).notNull().default(false),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 });
 
 export const assetsRelations = relations(assets, ({ one, many }) => ({

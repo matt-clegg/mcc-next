@@ -5,7 +5,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="mt-10">
+    <div>
       <slot />
     </div>
   </div>

@@ -1,4 +1,9 @@
 ﻿<script setup lang="ts">
+
+const props = defineProps<{
+  event: EventItem;
+}>();
+
 const users = [
   {
     alt: "S M"

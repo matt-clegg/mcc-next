@@ -17,3 +17,7 @@ export function abbreviateNumber(input: number) {
 export function capitalize(input: string) {
   return input.charAt(0).toUpperCase() + input.slice(1);
 }
+
+export function pluralize(input: string, count?: number) {
+  return !count || count === 1 ? input : `${input}s`;
+}

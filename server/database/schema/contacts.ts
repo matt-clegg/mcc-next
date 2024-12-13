@@ -1,6 +1,7 @@
 ﻿import { sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import users from "./users";
 
 export const contacts = sqliteTable("contacts", {
@@ -8,8 +9,7 @@ export const contacts = sqliteTable("contacts", {
   user: text("user_id").references(() => users.id, { onDelete: "cascade" }),
   firstName: text("first_name").notNull(),
   contactNumber: text("contact_number").notNull(),
-  createdAt: text("created_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`),
-  updatedAt: text("updated_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`).$onUpdateFn(() => sql`datetime(current_timestamp)`)
+  ...timestampColumns
 });
 
 export const contactRelations = relations(contacts, ({ one }) => ({

@@ -8,16 +8,24 @@ useSeoMeta({
   title: "User roles"
 });
 
-const columns = [{
-  key: "name",
-  label: "Name",
-  sortable: true
-}, {
-  key: "isPublic",
-  label: "Visibility"
-}, {
-  key: "actions"
-}];
+const columns = [
+  {
+    key: "name",
+    label: "Name",
+    sortable: true
+  },
+  {
+    key: "type",
+    label: "Type"
+  },
+  {
+    key: "visibility",
+    label: "Visibility"
+  },
+  {
+    key: "actions"
+  }
+];
 
 const newRoleModalOpen = ref(false);
 const editRoleModalOpen = ref(false);
@@ -122,9 +130,29 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
           </span>
         </template>
 
-        <template #isPublic-data="{ row }">
+        <template #type-data="{ row }">
           <UBadge
-            v-if="row.isPublic"
+            color="primary"
+            :label="capitalize(row.type)"
+            variant="subtle"
+          />
+          <!--          <UBadge -->
+          <!--            v-if="row.type" -->
+          <!--            label="Public" -->
+          <!--            color="primary" -->
+          <!--            variant="subtle" -->
+          <!--          /> -->
+          <!--          <UBadge -->
+          <!--            v-else -->
+          <!--            label="Hidden" -->
+          <!--            color="red" -->
+          <!--            variant="subtle" -->
+          <!--          /> -->
+        </template>
+
+        <template #visibility-data="{ row }">
+          <UBadge
+            v-if="row.visibility === 'public'"
             label="Public"
             color="primary"
             variant="subtle"

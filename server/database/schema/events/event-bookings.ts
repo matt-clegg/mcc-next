@@ -2,6 +2,7 @@
 import { relations } from "drizzle-orm";
 import users from "../users";
 import { useHash } from "../../../../shared/utils/hash";
+import { timestampColumns } from "../../../utils/database";
 import events from "./events";
 
 export const eventBookings = sqliteTable("event_bookings", {
@@ -11,7 +12,7 @@ export const eventBookings = sqliteTable("event_bookings", {
   instance: integer("instance"),
   status: text("status", { enum: ["booked", "cancelled"] }).notNull(),
   cancelledAt: text("cancelled_at"),
-  createdAt: text("created_at").notNull().$defaultFn(() => new Date().toISOString())
+  ...timestampColumns
 }, eventBookings => ({
   unique: unique().on(eventBookings.user, eventBookings.event),
   eventIdx: index("ix_event_bookings_event_id").on(eventBookings.event),

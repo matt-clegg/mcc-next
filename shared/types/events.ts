@@ -7,27 +7,35 @@ export type EventItem = {
   status: EventStatus;
   title: string;
   description: string;
-  location?: string;
-  type: string;
+  location: string | null;
   occurrenceType: EventOccurrenceType;
-  maxSpaces?: number;
+  maxSpaces: number | null;
 
+  // Relations
+  allowedRoles: { role: Partial<Role> }[] | null;
+  type: Partial<EventType>;
+  prices: Partial<EventPrice>[];
+  bookings: Partial<EventBooking>[];
+
+  bookingAllowed: boolean;
   attendeesVisible: boolean;
   allowBookingsAfterStart: boolean;
-  lastBookingDate?: Date;
-  minAge?: number;
+  lastBookingDate: Date | null;
+  minAge: number | null;
 
   startDate: Date;
-  endDate?: Date;
-  rrule?: string;
+  endDate: Date | null;
+  rrule: string | null;
 
-  createdBy: User;
-  createdAt: Date;
-  updatedAt: Date;
+  createdBy: Partial<User>;
+  createdAt: string; // TODO: switch to Date
+  updatedAt: string; // TODO: switch to Date
 };
 
 export type EventPrice = {
   id: string;
+  price: number;
+  role: string | null;
 };
 
 export type EventBooking = {
@@ -40,5 +48,5 @@ export type EventType = {
   alias: string;
   color: string;
   createdAt: Date;
-  createdBy: User;
+  createdBy: Partial<User>;
 };

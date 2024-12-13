@@ -2,6 +2,7 @@
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 import { relations, sql } from "drizzle-orm";
 import { useHash } from "../../../shared/utils/hash";
+import { timestampColumns } from "../../utils/database";
 import memberships from "./memberships";
 import familyMembers from "./family-members";
 import { userRoles } from "./roles";
@@ -19,8 +20,7 @@ export const users = sqliteTable("users", {
   isJunior: integer("is_junior", { mode: "boolean" }).notNull().default(false),
   isVerified: integer("is_verified", { mode: "boolean" }).notNull().default(false),
   parent: text("parent_id").references((): AnySQLiteColumn => users.id, { onDelete: "set null" }),
-  createdAt: text("created_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`),
-  updatedAt: text("updated_at").notNull().$defaultFn(() => sql`datetime(current_timestamp)`).$onUpdateFn(() => sql`datetime(current_timestamp)`)
+  ...timestampColumns
 }, users => ({
   firstNameIdx: index("ix_users_first_name").on(users.firstName),
   lastNameIdx: index("ix_users_last_name").on(users.lastName)

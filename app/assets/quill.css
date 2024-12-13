@@ -1,0 +1,60 @@
+﻿/* Light */
+.ql-snow.ql-toolbar {
+    border-color: theme('colors.gray.300');
+    border-top-left-radius: theme('borderRadius.md');
+    border-top-right-radius: theme('borderRadius.md')
+}
+
+.ql-snow.ql-toolbar button:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 rounded-sm;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-fill {
+    fill: theme('colors.primary.500')
+}
+.ql-snow.ql-toolbar button:hover .ql-stroke {
+    stroke: theme('colors.primary.500')
+}
+.ql-snow.ql-toolbar button:focus .ql-fill {
+    fill: theme('colors.primary.500')
+}
+.ql-snow.ql-toolbar button:focus .ql-stroke {
+    stroke: theme('colors.primary.500')
+}
+.ql-snow.ql-toolbar button.ql-active .ql-fill {
+    fill: theme('colors.primary.500')
+}
+.ql-snow.ql-toolbar button.ql-active .ql-stroke {
+    stroke: theme('colors.primary.500')
+}
+.ql-snow .ql-fill {
+    fill: theme('colors.gray.500')
+}
+.ql-snow .ql-stroke {
+    stroke: theme('colors.gray.500')
+}
+.ql-snow.ql-container {
+    border-color: theme('colors.gray.300');
+    border-bottom-left-radius: theme('borderRadius.md');
+    border-bottom-right-radius: theme('borderRadius.md');
+    font-size: theme('fontSize.sm');
+    font-family: theme('fontFamily.sans'), serif;
+}
+.ql-editor {
+    min-height: theme('spacing.32');
+}
+
+.ql-editor:focus-within {
+    @apply ring-2 ring-primary-400;
+    border-radius: 0 0 theme('borderRadius.md') theme('borderRadius.md');
+}
+
+.ql-editor.ql-blank::before {
+    color: theme('colors.gray.300');
+    font-style: normal;
+}
+.ql-editor {
+    color: theme('colors.gray.900');
+    border-radius: theme('borderRadius.md');
+    @apply shadow-sm;
+}
