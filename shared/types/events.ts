@@ -13,7 +13,7 @@ export type EventItem = {
 
   // Relations
   allowedRoles: { role: Partial<Role> }[] | null;
-  type: Partial<EventType>;
+  category: Partial<EventCategory>;
   prices: Partial<EventPrice>[];
   bookings: Partial<EventBooking>[];
 
@@ -42,7 +42,7 @@ export type EventBooking = {
   id: string;
 };
 
-export type EventType = {
+export type EventCategory = {
   id: string;
   name: string;
   alias: string;

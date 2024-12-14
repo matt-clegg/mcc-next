@@ -3,7 +3,7 @@ import type { FormSubmitEvent } from "#ui/types";
 
 const props = defineProps<{
   id: string;
-  state: Partial<EditEventTypeSchema>;
+  state: Partial<EditEventCategorySchema>;
 }>();
 
 const emits = defineEmits<{
@@ -14,7 +14,7 @@ const open = defineModel<boolean>("open", { required: true });
 
 const loading = ref(false);
 
-const state = ref<Partial<EditEventTypeSchema>>({
+const state = ref<Partial<EditEventCategorySchema>>({
   ...props.state
 });
 
@@ -23,11 +23,11 @@ watch(() => props.state, (val) => {
     ...val
   };
 });
-async function onSubmit(event: FormSubmitEvent<EditEventTypeSchema>) {
+async function onSubmit(event: FormSubmitEvent<EditEventCategorySchema>) {
   loading.value = true;
 
   try {
-    await $fetch(`/api/admin/events/types/${props.id}`, {
+    await $fetch(`/api/admin/events/categories/${props.id}`, {
       method: "PATCH",
       body: event.data
     });
@@ -54,9 +54,9 @@ function close() {
     prevent-close
     :ui="{ width: 'sm:max-w-md' }"
   >
-    <AdminEventsTypeForm
+    <AdminEventsCategoryForm
       :state="state"
-      :schema="editEventTypeValidator"
+      :schema="editEventCategoryValidator"
       :loading="loading"
       @submit="onSubmit"
     />

@@ -1,7 +1,7 @@
 ﻿<script setup lang="ts">
 import {
   EventsWizardStepType,
-  // EventsWizardStepCompliance,
+  EventsWizardStepCompliance,
   EventsWizardStepBasics,
   EventsWizardStepPricing,
   EventsWizardStepSingleDate,
@@ -36,10 +36,10 @@ const steps = computed<WizardStep[]>(() => {
   }
 
   result.push(
-    // {
-    //   id: "compliance",
-    //   component: EventsWizardStepCompliance
-    // },
+    {
+      id: "compliance",
+      component: EventsWizardStepCompliance
+    },
     {
       id: "basics",
       component: EventsWizardStepBasics
@@ -131,8 +131,8 @@ async function updateEvent() {
 </script>
 
 <template>
-  <div class="space-y-8 mt-12">
-    <h1 class="text-2xl font-bold text-center">
+  <div class="mt-12 space-y-8">
+    <h1 class="text-center text-2xl font-bold">
       {{ isEditMode ? "Editing event" : "Create new event" }}
     </h1>
     <div class="m-auto max-w-2xl">

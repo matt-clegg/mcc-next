@@ -4,12 +4,13 @@ export type EventWizardItem = {
   title?: string;
   description?: string;
   location?: string;
-  type?: string;
+  category?: string;
   occurrenceType?: EventOccurrenceType;
   maxSpaces?: number;
 
   allowedRoles: string[];
   prices: Record<string, number>;
+  disclaimer?: string;
 
   bookingAllowed: boolean;
   attendeesVisible: boolean;
@@ -24,6 +25,8 @@ export type EventWizardItem = {
     endDate: Date;
   }[];
   rrule?: string;
+
+  confirmed: boolean;
 };
 
 export function useEventWizard(eventId?: string) {
@@ -38,7 +41,6 @@ export function useEventWizard(eventId?: string) {
       title: "Example Event",
       location: "Maidstone Canoe Club",
       description: "<p>Words about the <strong>event</strong> can go here.</p>",
-      type: "g6lv590boEljAuEVEfNSg",
 
       allowedRoles: [],
       prices: {},
@@ -46,7 +48,9 @@ export function useEventWizard(eventId?: string) {
 
       bookingAllowed: true,
       attendeesVisible: false,
-      allowBookingsAfterStart: false
+      allowBookingsAfterStart: false,
+
+      confirmed: false
     };
   }
 

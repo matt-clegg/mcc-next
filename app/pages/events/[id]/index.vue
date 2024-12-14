@@ -87,109 +87,60 @@ const formattedTimeLeft = computed(() => {
 });
 
 const bookNowDisabled = computed(() => !!lastBookingDate.value && timeLeftToBook.value / 1000 < 1);
-
-const formattedDate = computed(() => {
-  const start = new Date(event.value.startDate);
-  const end = new Date(event.value.endDate);
-
-  if (isSameDay(start, end)) {
-    return format(start, "do MMM, yyyy");
-  }
-
-  if (isSameMonth(start, end) && isSameYear(start, end)) {
-    return `${format(start, "do")} - ${format(end, "do MMM, yyyy")}`;
-  }
-
-  if (isSameYear(start, end)) {
-    return `${format(start, "do MMM")} - ${format(end, "do MMM, yyyy")}`;
-  }
-
-  return `${format(start, "do MMM, yyyy")} - ${format(end, "do MMM, yyyy")}`;
-});
-
-const formatTime = computed(() => {
-  const start = event.value.startDate;
-  const end = event.value.endDate;
-
-  return `${format(start, "h:mma")} - ${format(end, "h:mma")}`.toLowerCase();
-});
 </script>
 
 <template>
-  <article class="space-y-8 pb-10">
-    <div class="md:col-span-8 relative overflow-hidden min-h-72 flex flex-col justify-end pb-5">
-      <div class="absolute bottom-0 top-0 z-8">
+  <article class="space-y-8 pb-10 md:mt-5 lg:mt-10">
+    <UContainer
+      :ui="{
+        base: 'hidden md:block relative min-h-72 overflow-hidden',
+        constrained: 'max-w-5xl' }"
+    >
+      <NuxtImg
+        class="w-full rounded-xl object-cover"
+        src="/images/wide.jpg"
+      />
+      <div class="absolute inset-x-4 inset-y-0 rounded-xl bg-gradient-to-t from-black from-15% to-85% opacity-80 sm:inset-x-6 lg:inset-x-8" />
+
+      <div class="absolute inset-4 sm:inset-6 lg:inset-8">
+        <EventsHeader :event="event" />
+      </div>
+    </UContainer>
+
+    <div class="relative min-h-72 overflow-hidden md:hidden">
+      <div class="absolute inset-0">
         <NuxtImg
-          class="w-full h-full object-cover"
+          class="size-full object-cover"
           src="/images/wide.jpg"
         />
-        <div class="absolute opacity-80 inset-0 bg-gradient-to-t from-15% to-85% from-black z-9 " />
       </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black from-15% to-85% opacity-80" />
 
-      <div class="z-10 text-white">
-        <UContainer :ui="{ constrained: 'max-w-5xl' }">
-          <h2 class="font-bold text-2xl md:text-3xl mb-2">
-            {{ event.title }}
-          </h2>
-
-          <div class="text-sm flex gap-3 flex-wrap">
-            <div class="flex gap-2 items-center">
-              <UIcon
-                name="i-heroicons-map-pin"
-                class="size-5"
-              />
-              <span>
-                {{ event.location }}
-              </span>
-            </div>
-
-            <span>•</span>
-
-            <div class="flex gap-2 items-center">
-              <UIcon
-                name="i-heroicons-calendar-days"
-                class="size-5"
-              />
-              <span>
-                {{ formattedDate }}
-              </span>
-            </div>
-
-            <span>•</span>
-
-            <div class="flex gap-2 items-center">
-              <UIcon
-                name="i-heroicons-clock"
-                class="size-5"
-              />
-              <span>
-                {{ formatTime }}
-              </span>
-            </div>
-          </div>
-        </UContainer>
+      <div class="absolute inset-x-0 inset-y-4">
+        <EventsHeader :event="event" />
       </div>
     </div>
 
     <UContainer :ui="{ constrained: 'max-w-5xl' }">
-      <div class="grid lg:grid-cols-12 gap-6">
-        <div class="md:col-span-8 space-y-6">
-          <div class="prose">
-            <SanitizeHtml :html="event.description" />
-          </div>
+      <div class="grid gap-6 md:grid-cols-12">
+        <div class="space-y-6 md:col-span-8">
+          <SanitizeHtml
+            :html="event.description"
+            class="prose"
+          />
         </div>
 
-        <div class="md:col-span-4 space-y-4">
+        <div class="space-y-4 md:col-span-4">
           <EventsInfo :event="event" />
 
           <div class="relative">
             <template v-if="lastBookingDate">
               <div
-                class="absolute inset-0 border rounded-lg transition-all"
+                class="absolute inset-0 rounded-lg border transition-all"
                 :class="timeLeftToBook / 1000 > 60 * 60 ? 'border-orange-400 bg-orange-50' : 'border-red-400 bg-red-100'"
               />
               <div
-                class="px-3 text-center text-sm z-10 relative transition-all"
+                class="relative z-10 px-3 text-center text-sm transition-all"
                 :class="timeLeftToBook / 1000 > 60 * 60 ? 'text-orange-700 py-0.5' : 'text-red-800 py-1'"
               >
                 <template v-if="timeLeftToBook / 1000 >= 1">
@@ -200,7 +151,7 @@ const formatTime = computed(() => {
                 </template>
               </div>
             </template>
-            <div class="z-10 relative">
+            <div class="relative z-10">
               <UButton
                 icon="i-heroicons-ticket"
                 size="xl"

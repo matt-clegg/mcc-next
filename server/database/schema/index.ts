@@ -5,7 +5,7 @@ export { default as emailTemplates } from "./email";
 export { default as eventAllowedRoles, eventAllowedRolesRelations } from "./events/event-allowed-roles";
 export { default as eventBookings, eventBookingsRelations } from "./events/event-bookings";
 export { default as eventPrices, eventPriceRelations } from "./events/event-prices";
-export { default as eventTypes } from "./events/event-types";
+export { default as eventCategories } from "./events/event-categories";
 export { default as events, eventRelations } from "./events/events";
 export { default as familyMembers, familyMemberRelations } from "./family-members";
 export { default as folderPermissions, folderPermissionRelations } from "./folder-permissions";

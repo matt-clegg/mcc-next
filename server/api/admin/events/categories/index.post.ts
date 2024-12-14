@@ -3,29 +3,27 @@
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event);
 
-  await authorize(event, canCreateEventType);
+  await authorize(event, canCreateEventCategory);
 
-  const body = await readValidatedBody(event, createEventTypeValidator.parse);
+  const body = await readValidatedBody(event, createEventCategoryValidator.parse);
 
   const alias = slugify(body.name);
 
-  // TODO: Ignore self
-  
   const existing = await useDrizzle()
-    .select({ alias: tables.eventTypes.alias })
-    .from(tables.eventTypes)
-    .where(eq(tables.eventTypes.alias, alias))
+    .select({ alias: tables.eventCategorys.alias })
+    .from(tables.eventCategorys)
+    .where(eq(tables.eventCategorys.alias, alias))
     .get();
 
   if (existing) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Event type with that name already exists"
+      statusMessage: "Event category with that name already exists"
     });
   }
 
   return useDrizzle()
-    .insert(tables.eventTypes)
+    .insert(tables.eventCategories)
     .values({
       ...body,
       alias,

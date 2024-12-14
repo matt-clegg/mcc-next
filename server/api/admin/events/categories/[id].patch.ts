@@ -1,4 +1,4 @@
-﻿import { eq } from "drizzle-orm";
+﻿import { eq, and, ne } from "drizzle-orm";
 
 export default eventHandler(async (event) => {
   await requireUserSession(event);
@@ -25,7 +25,7 @@ export default eventHandler(async (event) => {
   const sameAlias = await useDrizzle()
     .select({ alias: tables.eventTypes.alias })
     .from(tables.eventTypes)
-    .where(eq(tables.eventTypes.alias, newAlias))
+    .where(and(eq(tables.eventTypes.alias, newAlias), ne(tables.eventTypes.id, id)))
     .get();
 
   if (sameAlias) {

@@ -135,6 +135,9 @@ importers:
       eslint:
         specifier: ^9.14.0
         version: 9.15.0(jiti@2.4.0)
+      eslint-plugin-tailwindcss:
+        specifier: ^3.17.5
+        version: 3.17.5(tailwindcss@3.4.15)
       happy-dom:
         specifier: ^15.11.2
         version: 15.11.6
@@ -3345,6 +3348,12 @@ packages:
     engines: {node: ^18 || >=20}
     peerDependencies:
       eslint: '>=8.44.0'
+
+  eslint-plugin-tailwindcss@3.17.5:
+    resolution: {integrity: sha512-8Mi7p7dm+mO1dHgRHHFdPu4RDTBk69Cn4P0B40vRQR+MrguUpwmKwhZy1kqYe3Km8/4nb+cyrCF+5SodOEmaow==}
+    engines: {node: '>=18.12.0'}
+    peerDependencies:
+      tailwindcss: ^3.4.0
 
   eslint-plugin-unicorn@56.0.1:
     resolution: {integrity: sha512-FwVV0Uwf8XPfVnKSGpMg7NtlZh0G0gBarCaFcMUOoqPxXryxdYxTRRv4kH6B9TFCVIrjRXG+emcxIk2ayZilog==}
@@ -9602,6 +9611,12 @@ snapshots:
       refa: 0.12.1
       regexp-ast-analysis: 0.7.1
       scslre: 0.3.0
+
+  eslint-plugin-tailwindcss@3.17.5(tailwindcss@3.4.15):
+    dependencies:
+      fast-glob: 3.3.2
+      postcss: 8.4.49
+      tailwindcss: 3.4.15
 
   eslint-plugin-unicorn@56.0.1(eslint@9.15.0(jiti@2.4.0)):
     dependencies:

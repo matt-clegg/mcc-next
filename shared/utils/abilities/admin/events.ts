@@ -1,4 +1,4 @@
-﻿export const canCreateEventType = defineAbility((loggedInUser: User) => {
+﻿export const canCreateEventCategory = defineAbility((loggedInUser: User) => {
   if (loggedInUser.isAdmin) {
     return true;
   }
@@ -6,7 +6,7 @@
   return false;
 });
 
-export const canEditEventType = defineAbility((loggedInUser: User) => {
+export const canEditEventCategory = defineAbility((loggedInUser: User) => {
   if (loggedInUser.isAdmin) {
     return true;
   }
@@ -14,7 +14,7 @@ export const canEditEventType = defineAbility((loggedInUser: User) => {
   return false;
 });
 
-export const canDeleteEventType = defineAbility((loggedInUser: User) => {
+export const canDeleteEventCategory = defineAbility((loggedInUser: User) => {
   if (loggedInUser.isAdmin) {
     return true;
   }

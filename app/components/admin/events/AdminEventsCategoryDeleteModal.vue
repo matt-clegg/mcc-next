@@ -12,13 +12,13 @@ const loading = ref(false);
 async function onDelete() {
   loading.value = true;
   try {
-    await $fetch(`/api/admin/events/types/${props.id}`, {
+    await $fetch(`/api/admin/events/categories/${props.id}`, {
       method: "DELETE"
     });
 
     emits("deleted");
     close();
-    useSuccessToast("Event type has been deleted");
+    useSuccessToast("Event category has been deleted");
   }
   catch (err: any) {
     loading.value = false;
@@ -34,8 +34,8 @@ function close() {
 <template>
   <UDashboardModal
     v-model="open"
-    title="Delete event type"
-    description="Are you sure you want to delete this event type?"
+    title="Delete event category"
+    description="Are you sure you want to delete this category?"
     icon="i-heroicons-exclamation-circle"
     prevent-close
     :ui="{
@@ -57,12 +57,6 @@ function close() {
         @click="open = false"
       />
     </template>
-    <!--    <AdminEventsTypeForm -->
-    <!--      :state="state" -->
-    <!--      :schema="editEventTypeValidator" -->
-    <!--      :loading="loading" -->
-    <!--      @submit="onSubmit" -->
-    <!--    /> -->
   </UDashboardModal>
 </template>
 

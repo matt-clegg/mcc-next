@@ -26,4 +26,4 @@ logs
 !.env.example
 
 # Seed data
-server/database/seeds/legacy/*
+/server/database/seeds/legacy/*

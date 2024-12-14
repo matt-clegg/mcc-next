@@ -1,4 +1,4 @@
-﻿<script setup lang="ts" generic="T extends Partial<EventType>">
+﻿<script setup lang="ts" generic="T extends Partial<EventCategory>">
 import type { FormSubmitEvent } from "#ui/types";
 
 const props = defineProps<{

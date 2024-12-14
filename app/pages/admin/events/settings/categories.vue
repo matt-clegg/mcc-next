@@ -7,7 +7,7 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Event types"
+  title: "Event categories"
 });
 
 const columns = [
@@ -35,10 +35,10 @@ const columns = [
   }
 ];
 
-const createEventTypeModalOpen = ref(false);
-const editEventTypeModalOpen = ref(false);
-const deleteEventTypeModalOpen = ref(false);
-const editEventType = ref<EventType | null>(null);
+const createEventCategoryModalOpen = ref(false);
+const editEventCategoryModalOpen = ref(false);
+const deleteEventCategoryModalOpen = ref(false);
+const editEventCategory = ref<EventCategory | null>(null);
 
 const { page, limit } = usePagination();
 const { sortConfig, sortValue } = useSort(
@@ -55,14 +55,14 @@ const fields = ref([
 ]);
 
 const {
-  data: eventTypes,
+  data: eventCategories,
   count,
   status,
   refresh
-} = await useDataList<EventType>("/api/admin/events/types", { page, limit, sort: sortValue, fields });
+} = await useDataList<EventCategory>("/api/admin/events/categories", { page, limit, sort: sortValue, fields });
 
-const canEdit = computedAsync(async () => await allows(canEditEventType));
-const canDelete = computedAsync(async () => await allows(canDeleteEventType));
+const canEdit = computedAsync(async () => await allows(canEditEventCategory));
+const canDelete = computedAsync(async () => await allows(canDeleteEventCategory));
 
 function actionItems(row: any) {
   const result = [];
@@ -71,8 +71,8 @@ function actionItems(row: any) {
     result.push([{
       label: "Edit",
       click: () => {
-        editEventType.value = row;
-        editEventTypeModalOpen.value = true;
+        editEventCategory.value = row;
+        editEventCategoryModalOpen.value = true;
       }
     }]);
   }
@@ -82,8 +82,8 @@ function actionItems(row: any) {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
       click: () => {
-        editEventType.value = row;
-        deleteEventTypeModalOpen.value = true;
+        editEventCategory.value = row;
+        deleteEventCategoryModalOpen.value = true;
       }
     }]);
   }
@@ -103,7 +103,7 @@ function actionItems(row: any) {
 
 async function onRefresh() {
   page.value = 1;
-  editEventType.value = null;
+  editEventCategory.value = null;
   await refresh();
 }
 
@@ -116,13 +116,13 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
       <template #left>
         <UButton
           icon="i-heroicons-plus"
-          @click="createEventTypeModalOpen = true"
+          @click="createEventCategoryModalOpen = true"
         >
-          Add event type
+          Add category
         </UButton>
       </template>
       <template #right>
-        <div class="flex gap-4 items-center">
+        <div class="flex items-center gap-4">
           <small>{{ resultsLabel }}</small>
           <UPagination
             v-model="page"
@@ -134,7 +134,7 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
     </UDashboardToolbar>
     <UTable
       v-model:sort="sortConfig"
-      :rows="eventTypes"
+      :rows="eventCategories"
       :columns="columns"
       :loading="status === 'pending'"
       sort-mode="manual"
@@ -162,7 +162,7 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
         >
           <template v-if="row.createdBy.firstName && row.createdBy.lastName">
             <UAvatar size="xs" />
-            <span class="text-gray-900 font-medium">{{ row.createdBy.firstName }} {{ row.createdBy.lastName }}</span>
+            <span class="font-medium text-gray-900">{{ row.createdBy.firstName }} {{ row.createdBy.lastName }}</span>
           </template>
         </div>
       </template>
@@ -174,23 +174,23 @@ const resultsLabel = computed(() => formatResultLabel(count.value, limit.value))
       </template>
     </UTable>
 
-    <LazyAdminEventsTypeDeleteModal
-      v-if="editEventType?.id"
-      :id="editEventType.id"
-      v-model:open="deleteEventTypeModalOpen"
+    <LazyAdminEventsCategoryDeleteModal
+      v-if="editEventCategory?.id"
+      :id="editEventCategory.id"
+      v-model:open="deleteEventCategoryModalOpen"
       @deleted="onRefresh"
     />
 
-    <LazyAdminEventsTypeCreateModal
-      v-model:open="createEventTypeModalOpen"
+    <LazyAdminEventsCategoryCreateModal
+      v-model:open="createEventCategoryModalOpen"
       @created="onRefresh"
     />
 
-    <LazyAdminEventsTypeEditModal
-      v-if="editEventType?.id"
-      :id="editEventType.id"
-      v-model:open="editEventTypeModalOpen"
-      :state="editEventType"
+    <LazyAdminEventsCategoryEditModal
+      v-if="editEventCategory?.id"
+      :id="editEventCategory.id"
+      v-model:open="editEventCategoryModalOpen"
+      :state="editEventCategory"
       @edited="onRefresh"
     />
   </UDashboardPanel>

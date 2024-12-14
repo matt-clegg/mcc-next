@@ -3,15 +3,15 @@ import * as schema from "../schema";
 import type { EventInsert } from "../../database/schema/events/events";
 import type { EventPriceInsert } from "../../database/schema/events/event-prices";
 import type { EventOccurrenceType } from "../../../shared/types/events";
-import eventTypes from "./data/event-types.json";
+import eventCategories from "./data/event-categories.json";
 import events from "./legacy/events.json";
 import type { Database } from "~~/server/utils/drizzle";
 
 export default async function seed(db: Database) {
-  console.log("Seeding event types...");
+  console.log("Seeding event categories...");
   await db
-    .insert(schema.eventTypes)
-    .values(eventTypes);
+    .insert(schema.eventCategories)
+    .values(eventCategories);
 
   console.log("Seeding events...");
 
@@ -34,9 +34,9 @@ export default async function seed(db: Database) {
 
   console.log("user", user);
 
-  const types = await db
+  const categories = await db
     .select()
-    .from(schema.eventTypes);
+    .from(schema.eventCategories);
 
   for (const event of events) {
     let occurrenceType: EventOccurrenceType = "single";
@@ -48,7 +48,7 @@ export default async function seed(db: Database) {
       occurrenceType = "multi";
     }
 
-    const type = types.find(t => t.alias.replaceAll("-", "_") === event.type)!.id;
+    const category = categories.find(c => c.alias.replaceAll("-", "_") === event.type)!.id;
 
     const newEvent: EventInsert = {
       id: event.id,
@@ -57,10 +57,11 @@ export default async function seed(db: Database) {
       description: event.description ?? "<p>missing description</p>",
       location: event.location,
       occurrenceType,
-      type,
+      category,
       maxSpaces: event.max_spaces !== null ? Number(event.max_spaces) : null,
 
       // parent: event.parent_event ? event.parent_event.id : null,
+      // TODO: handle parents in separate pass?
       parent: null,
 
       bookingAllowed: true,
@@ -113,6 +114,20 @@ export default async function seed(db: Database) {
 
 async function addEventPricing(db: Database, oldEvent: any, eventId: string, roles: Role[]) {
   if (oldEvent.price) {
+    // TODO:
+    // If there are other roles allowed that aren't junior, set prices for them as well
+
+    // const allowedAdults = allowedRoles.filter(r => !r.includes("junior"));
+    // if (allowedAdults.length > 0) {
+    //   for (const role of allowedAdults) {
+    //     await addPrice(db, {
+    //       event: eventId,
+    //       price: oldEvent.oldEvent.price,
+    //       role: roles.find(r => r.alias === role)!.id
+    //     });
+    //   }
+    // }
+
     await addPrice(db, {
       event: eventId,
       price: oldEvent.price

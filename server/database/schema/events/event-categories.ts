@@ -3,7 +3,7 @@ import { useHash } from "../../../../shared/utils/hash";
 import { timestampColumns } from "../../../utils/database";
 import users from "../users";
 
-export const eventTypes = sqliteTable("event_types", {
+export const eventCategories = sqliteTable("event_categories", {
   id: text("id").primaryKey().$defaultFn(() => useHash()),
   name: text("name").notNull(),
   alias: text("alias").notNull(),
@@ -12,4 +12,4 @@ export const eventTypes = sqliteTable("event_types", {
   ...timestampColumns
 });
 
-export default eventTypes;
+export default eventCategories;

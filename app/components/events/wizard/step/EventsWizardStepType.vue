@@ -74,9 +74,9 @@ function onBack() {
               container: 'ml-4 mt-4'
             }"
             :class="[
-              index === 0 ? 'rounded-tl-md rounded-tr-md' : '',
-              index === eventTypes.length - 1 ? 'rounded-bl-md rounded-br-md' : '',
-              isChecked(eventType) ? 'z-10 border-primary-200 bg-primary-50' : 'border-gray-200',
+              index === 0 ? 'rounded-t-md' : '',
+              index === eventTypes.length - 1 ? 'rounded-b-md' : '',
+              isChecked(eventType) ? 'border-primary-200 bg-primary-100 z-10' : 'border-gray-200',
               templateSelected ? 'opacity-60' : 'cursor-pointer',
               'relative flex border']"
           >

@@ -68,11 +68,13 @@ function onTabChange() {
     >
       <template #item="{ item }">
         <UForm
-          class="space-y-6 mt-8"
+          class="mt-8 space-y-6"
           :state="newEvent"
           @submit="onSubmit"
         >
           <template v-if="item.key === 'simple'">
+            <p>Set the price to book for anyone.</p>
+
             <UFormGroup
               label="Event price"
               help="Leave blank to make the event free"

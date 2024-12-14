@@ -3,7 +3,7 @@ import "quill/dist/quill.snow.css";
 import { QuillEditor } from "@vueup/vue-quill";
 import "~/assets/quill.css";
 
-const content = defineModel<string>({ required: true });
+const content = defineModel<string | undefined>({ required: true });
 
 withDefaults(defineProps<{
   contentType?: "html" | "text";

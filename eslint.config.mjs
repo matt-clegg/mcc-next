@@ -1,4 +1,5 @@
-﻿// @ts-check
+﻿import tailwind from "eslint-plugin-tailwindcss";
+// @ts-check
 import withNuxt from "./.nuxt/eslint.config.mjs";
 
 export default withNuxt(
@@ -7,6 +8,13 @@ export default withNuxt(
     rules: {
       "vue/component-name-in-template-casing": ["error", "PascalCase"]
     }
+  },
+  {
+    files: ["**/*.vue"],
+    plugins: {
+      tailwindcss: tailwind
+    },
+    rules: tailwind.configs.recommended.rules
   }
 )
   .overrideRules({

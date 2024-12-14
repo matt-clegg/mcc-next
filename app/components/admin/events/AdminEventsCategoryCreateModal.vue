@@ -9,23 +9,23 @@ const emits = defineEmits<{
   created: [];
 }>();
 
-const state = reactive<Partial<CreateEventTypeSchema>>({
+const state = reactive<Partial<CreateEventCategorySchema>>({
   name: undefined,
   color: undefined
 });
 
-async function onSubmit(event: FormSubmitEvent<CreateEventTypeSchema>) {
+async function onSubmit(event: FormSubmitEvent<CreateEventCategorySchema>) {
   loading.value = true;
 
   try {
-    await $fetch("/api/admin/events/types", {
+    await $fetch("/api/admin/events/categories", {
       method: "POST",
       body: event.data
     });
 
     emits("created");
     close();
-    useSuccessToast(`Event type ${event.data.name} has been created`);
+    useSuccessToast(`Event category ${event.data.name} has been created`);
   }
   catch (err: any) {
     loading.value = false;
@@ -41,14 +41,14 @@ function close() {
 <template>
   <UDashboardModal
     v-model="open"
-    title="Create event type"
-    description="Event types are used to categorize events"
+    title="Create event category"
+    description="Event categories are used to categorize events"
     prevent-close
     :ui="{ width: 'sm:max-w-md' }"
   >
-    <AdminEventsTypeForm
+    <AdminEventsCategoryForm
       :state="state"
-      :schema="createEventTypeValidator"
+      :schema="createEventCategoryValidator"
       :loading="loading"
       @submit="onSubmit"
     />

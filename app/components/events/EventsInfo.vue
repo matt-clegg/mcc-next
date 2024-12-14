@@ -1,5 +1,4 @@
 ﻿<script setup lang="ts">
-
 const props = defineProps<{
   event: EventItem;
 }>();
@@ -40,7 +39,7 @@ const viewAttendeesModalOpen = ref(false);
 </script>
 
 <template>
-  <div class="p-4 border border-gray-200 rounded-lg flex flex-col gap-4">
+  <div class="flex flex-col gap-4 rounded-lg border border-gray-200 p-4">
     <!--    <div class="flex items-center gap-3"> -->
     <!--      <UIcon -->
     <!--        name="i-heroicons-calendar-days" -->
@@ -62,6 +61,34 @@ const viewAttendeesModalOpen = ref(false);
     <!--    </div> -->
 
     <!--    <UDivider /> -->
+    <EventsPrices :prices="event.prices" />
+
+    <!--    <div class="flex flex-wrap gap-2"> -->
+    <!--      <div class="flex flex-col"> -->
+    <!--        <span class="text-2xl font-bold">£8</span> -->
+    <!--        <span class="text-sm text-gray-700">Per junior</span> -->
+    <!--      </div> -->
+
+    <!--      <div class="flex flex-col"> -->
+    <!--        <span class="text-2xl font-bold">£10</span> -->
+    <!--        <span class="text-sm text-gray-700">Per coach</span> -->
+    <!--      </div> -->
+
+    <!--      <div class="flex flex-col"> -->
+    <!--        <span class="text-2xl font-bold">£11</span> -->
+    <!--        <span class="text-sm text-gray-700">Per member</span> -->
+    <!--      </div> -->
+
+    <!--      <div class="flex flex-col"> -->
+    <!--        <span class="text-2xl font-bold">£20</span> -->
+    <!--        <span class="text-sm text-gray-700">Per non-member</span> -->
+    <!--      </div> -->
+
+    <!--      <div class="flex flex-col"> -->
+    <!--        <span class="text-2xl font-bold">Free</span> -->
+    <!--        <span class="text-sm text-gray-700">For adults</span> -->
+    <!--      </div> -->
+    <!--    </div> -->
 
     <div class="flex items-center gap-3">
       <UIcon
@@ -86,7 +113,7 @@ const viewAttendeesModalOpen = ref(false);
     <div class="flex gap-3">
       <UIcon
         name="i-heroicons-users"
-        class="size-5 mt-0.5"
+        class="mt-0.5 size-5"
       />
       <div class="flex flex-col gap-2">
         <span>
@@ -95,7 +122,7 @@ const viewAttendeesModalOpen = ref(false);
           </span>
           <span>(4 spaces left)</span>
         </span>
-        <div class="flex border-none border-gray-200 rounded-xl gap-2">
+        <div class="flex gap-2 rounded-xl border-none border-gray-200">
           <UAvatarGroup
             size="sm"
             :max="4"

@@ -16,9 +16,9 @@ const links = [
     exact: true
   },
   {
-    label: "Event types",
+    label: "Event categories",
     icon: "i-heroicons-list-bullet",
-    to: "/admin/events/settings/event-types"
+    to: "/admin/events/settings/event-categories"
   }
 ];
 </script>
@@ -29,7 +29,7 @@ const links = [
       <UDashboardNavbar
         title="Event settings"
       />
-      <UDashboardToolbar class="py-0 px-1.5 overflow-x-auto hidden sm:flex">
+      <UDashboardToolbar class="hidden overflow-x-auto px-1.5 py-0 sm:flex">
         <UHorizontalNavigation :links="links" />
       </UDashboardToolbar>
 

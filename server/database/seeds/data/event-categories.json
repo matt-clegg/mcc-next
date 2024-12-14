@@ -7,46 +7,46 @@
   {
     "name": "Regular club paddle",
     "alias": "club-paddle",
-    "color": "red"
+    "color": "green"
   },
   {
     "name": "Race training",
     "alias": "race-training",
-    "color": "red"
+    "color": "blue"
   },
   {
     "name": "Coaching",
     "alias": "coaching",
-    "color": "red"
+    "color": "cyan"
   },
   {
     "name": "Paddles, trips & tours",
     "alias": "paddles-trips-tours",
-    "color": "red"
+    "color": "orange"
   },
   {
     "name": "Social events",
     "alias": "social-event",
-    "color": "red"
+    "color": "purple"
   },
   {
     "name": "Fun sessions",
     "alias": "fun-session",
-    "color": "red"
+    "color": "pink"
   },
   {
     "name": "Race",
     "alias": "race",
-    "color": "red"
+    "color": "rose"
   },
   {
     "name": "Beginners course",
     "alias": "beginners-course",
-    "color": "red"
+    "color": "teal"
   },
   {
     "name": "Meeting",
     "alias": "meetings",
-    "color": "red"
+    "color": "emerald"
   }
 ]

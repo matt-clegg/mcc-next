@@ -4,7 +4,7 @@ import { relations } from "drizzle-orm";
 import { useHash } from "../../../../shared/utils/hash";
 import { timestampColumns } from "../../../utils/database";
 import users from "../users";
-import eventTypes from "./event-types";
+import eventCategories from "./event-categories";
 import eventPrices from "./event-prices";
 import eventAllowedRoles from "./event-allowed-roles";
 import eventBookings from "./event-bookings";
@@ -17,7 +17,7 @@ export const events = sqliteTable("events", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   location: text("location"),
-  type: text("type").notNull().references(() => eventTypes.id),
+  category: text("category").notNull().references(() => eventCategories.id),
   occurrenceType: text("occurrence_type", { enum: ["single", "multi", "recurring"] }).notNull(),
   maxSpaces: integer("max_spaces"),
 
@@ -41,9 +41,9 @@ export const events = sqliteTable("events", {
 });
 
 export const eventRelations = relations(events, ({ one, many }) => ({
-  type: one(eventTypes, {
-    fields: [events.type],
-    references: [eventTypes.id]
+  category: one(eventCategories, {
+    fields: [events.category],
+    references: [eventCategories.id]
   }),
   parent: one(events, {
     fields: [events.parent],

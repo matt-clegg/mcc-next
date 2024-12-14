@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const emits = defineEmits(["back", "next"]);
 
-defineProps<{
+const props = defineProps<{
   roles: Role[];
 }>();
 
@@ -13,7 +13,19 @@ const schema = z.object({
   title: z.string(),
   location: z.string(),
   maxSpaces: z.coerce.number().min(1).optional(),
-  minAge: z.coerce.number().min(8).optional()
+  minAge: z.coerce.number().min(8).optional(),
+
+  bookingAllowed: z.boolean().optional(),
+
+  allowedRoles: z.array(z.string())
+}).refine((val) => {
+  if (val.bookingAllowed) {
+    return val.allowedRoles.length > 0;
+  }
+  return true;
+}, {
+  message: "Please select at least one role",
+  path: ["allowedRoles"]
 });
 
 function onSubmit() {
@@ -25,7 +37,10 @@ function onBack() {
 }
 
 const minAge = computed(() => {
-  return "8";
+  const juniorsAllowed = newEvent.value.allowedRoles
+    .map(id => props.roles.find(r => r.id === id))
+    .some(r => r?.alias.includes("junior") ?? false);
+  return juniorsAllowed ? "8" : null;
 });
 
 watch(() => newEvent.value.bookingAllowed, (val) => {
@@ -89,10 +104,12 @@ watch(() => newEvent.value.bookingAllowed, (val) => {
       <UFormGroup
         name="maxSpaces"
         label="Max spaces"
+        hint="(optional)"
         :ui="{
           label: {
             base: !newEvent.bookingAllowed ? 'text-gray-400' : 'text-gray-700'
-          }
+          },
+          hint: !newEvent.bookingAllowed ? 'text-gray-400' : 'text-gray-500'
         }"
       >
         <UInput
@@ -107,11 +124,13 @@ watch(() => newEvent.value.bookingAllowed, (val) => {
       <UFormGroup
         v-if="newEvent.maxSpaces !== 0"
         name="allowedRoles"
-        label="Who can join this newEvent?"
+        label="Who can join this event?"
+        required
         :ui="{
           label: {
             base: !newEvent.bookingAllowed ? 'text-gray-400' : 'text-gray-700'
-          }
+          },
+          hint: !newEvent.bookingAllowed ? 'text-gray-400' : 'text-gray-500'
         }"
       >
         <USelectMenu
@@ -129,8 +148,8 @@ watch(() => newEvent.value.bookingAllowed, (val) => {
             >{{ newEvent.allowedRoles.map(id => roles.find(r => r.id === id)!.name).join(", ") }}</span>
             <span
               v-else
-              :class="!newEvent.bookingAllowed ? 'text-gray-400' : 'text-gray-700'"
-            >Anyone can join</span>
+              class="text-gray-400"
+            >Select user roles</span>
           </template>
         </USelectMenu>
       </UFormGroup>
@@ -148,6 +167,7 @@ watch(() => newEvent.value.bookingAllowed, (val) => {
       <UFormGroup
         name="minAge"
         label="Minimum attendee age"
+        hint="(optional)"
         :ui="{
           label: {
             base: !newEvent.bookingAllowed ? 'text-gray-400' : 'text-gray-700'
