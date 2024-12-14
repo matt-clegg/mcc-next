@@ -23,12 +23,11 @@ const label = computed(() => newsStatusOptions.find(o => o.value === props.statu
 
 <template>
   <UBadge
+    :label="status"
     :color="color"
     variant="solid"
     size="xs"
-  >
-    {{ label }}
-  </UBadge>
+  />
 </template>
 
 <style scoped>

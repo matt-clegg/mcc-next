@@ -47,7 +47,7 @@ export default async function seed(db: Database) {
 
   // Need to batch here as sqlite has a limit on parameters
 
-  for (let i = 0; i < 4000; i++) {
+  for (let i = 0; i < 100; i++) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const email = faker.internet.email({ firstName, lastName });

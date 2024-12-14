@@ -32,7 +32,7 @@ export const events = sqliteTable("events", {
 
   // Dates
   startDate: integer("start_date", { mode: "timestamp" }).notNull(),
-  endDate: integer("end_date", { mode: "timestamp" }),
+  endDate: integer("end_date", { mode: "timestamp" }).notNull(),
   rrule: text("rrule"),
 
   // Meta

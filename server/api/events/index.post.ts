@@ -82,7 +82,7 @@ async function createEventMetadata(id: string, newEvent: CreateEventWizardSchema
 function eventWizardItemToEvent(newEvent: CreateEventWizardSchema, user: User): EventInsert {
   const { allowedRoles, prices, dates, ...rest } = newEvent;
 
-  const result = {
+  const result: EventInsert = {
     ...rest,
     status: "published", // TODO: set status based on role
     createdBy: user.id

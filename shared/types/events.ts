@@ -24,7 +24,7 @@ export type EventItem = {
   minAge: number | null;
 
   startDate: Date;
-  endDate: Date | null;
+  endDate: Date;
   rrule: string | null;
 
   createdBy: Partial<User>;

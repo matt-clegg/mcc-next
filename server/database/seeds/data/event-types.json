@@ -26,12 +26,12 @@
   },
   {
     "name": "Social events",
-    "alias": "social-events",
+    "alias": "social-event",
     "color": "red"
   },
   {
     "name": "Fun sessions",
-    "alias": "fun-sessions",
+    "alias": "fun-session",
     "color": "red"
   },
   {
@@ -46,7 +46,7 @@
   },
   {
     "name": "Meeting",
-    "alias": "meeting",
+    "alias": "meetings",
     "color": "red"
   }
 ]

@@ -1,6 +1,4 @@
-﻿import type { SessionUser } from "#auth-utils";
-
-export default eventHandler(async (event) => {
+﻿export default eventHandler(async (event) => {
   await requireUserSession(event);
 
   await authorize(event, adminListUsers);
@@ -8,7 +6,8 @@ export default eventHandler(async (event) => {
   const queryColumns = [
     tables.users.firstName,
     tables.users.lastName,
-    tables.users.email];
+    tables.users.email
+  ];
 
   const sortColumns = {
     name: tables.users.lastName,
@@ -16,5 +15,5 @@ export default eventHandler(async (event) => {
     lastAccess: tables.users.lastAccess
   };
 
-  return getQueryData<SessionUser[]>(event, tables.users, queryColumns, sortColumns);
+  return getQueryData<User[]>(event, tables.users, queryColumns, sortColumns);
 });

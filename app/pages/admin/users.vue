@@ -31,7 +31,7 @@ const {
   data: users,
   count,
   status
-} = await useDataList("/api/admin/users", qDebounced, page, limit, sortValue);
+} = await useDataList("/api/admin/users", { q: qDebounced, page, limit, sort: sortValue });
 
 watch(q, () => page.value = 1);
 

@@ -4,6 +4,7 @@ import type { DashboardSidebarLink } from "#ui-pro/types";
 
 const { data: userCount } = await useFetch("/api/admin/users/count");
 const { data: newsCount } = await useFetch("/api/admin/news/count");
+const { data: eventCount } = await useFetch("/api/admin/events/count");
 
 const links = computedAsync(async () => {
   const items: DashboardSidebarLink[] = [
@@ -71,7 +72,7 @@ const links = computedAsync(async () => {
       {
         label: "Events",
         to: "/admin/events",
-        badge: abbreviateNumber(353)
+        badge: abbreviateNumber(eventCount.value ?? 0)
       },
       {
         label: "Bookings",

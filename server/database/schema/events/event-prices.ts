@@ -25,3 +25,5 @@ export const eventPriceRelations = relations(eventPrices, ({ one }) => ({
 }));
 
 export default eventPrices;
+
+export type EventPriceInsert = typeof eventPrices.$inferInsert;
