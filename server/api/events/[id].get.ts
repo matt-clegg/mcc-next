@@ -22,7 +22,7 @@ export default eventHandler(async (event) => {
             }
           }
         },
-        type: {
+        category: {
           columns: {
             id: true,
             name: true,

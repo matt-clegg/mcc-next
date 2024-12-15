@@ -73,7 +73,7 @@ function onTabChange() {
           @submit="onSubmit"
         >
           <template v-if="item.key === 'simple'">
-            <p>Set the price to book for anyone.</p>
+            <p>Set the price of the event, this price will apply to all users.</p>
 
             <UFormGroup
               label="Event price"

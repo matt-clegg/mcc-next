@@ -53,8 +53,6 @@ function onBack() {
 
 <template>
   <div class="space-y-6">
-    <strong>Event type</strong>
-
     <p>What type of event would you like to create?</p>
 
     <UForm
@@ -76,7 +74,7 @@ function onBack() {
             :class="[
               index === 0 ? 'rounded-t-md' : '',
               index === eventTypes.length - 1 ? 'rounded-b-md' : '',
-              isChecked(eventType) ? 'border-primary-200 bg-primary-100 z-10' : 'border-gray-200',
+              isChecked(eventType) ? 'border-primary-200 bg-primary-50 z-10' : 'border-gray-200',
               templateSelected ? 'opacity-60' : 'cursor-pointer',
               'relative flex border']"
           >

@@ -4,7 +4,7 @@ export const createEventWizardValidator = z.object({
   title: z.string(),
   description: z.string(),
   location: z.string().optional(),
-  type: z.string(),
+  category: z.string(),
   occurrenceType: z.enum(["single", "multi", "recurring"]),
   maxSpaces: z.number().min(1).optional(),
 

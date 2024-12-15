@@ -1,9 +1,11 @@
 ﻿export async function useRoles() {
   const roles = useState<Role[]>("roles", () => []);
 
-  if (!roles.value) {
-    const { data } = await useFetch("/api/roles");
-    roles.value = data;
+  if (!roles.value?.length) {
+    const { data } = await useFetch<Role[]>("/api/roles", {
+      default: () => []
+    });
+    roles.value = data.value;
   }
 
   function getRoleById(roleId: string) {
