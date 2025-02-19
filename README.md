@@ -1,7 +1,7 @@
 - [ ] **User authentication**
   - [ ] Users can register
   - [ ] Users must comfirm their email address upon registration
-  - [ ] Users can login
+  - [X] ~~Users can login~~
   - [ ] Users can request a password reset
 - [ ] **Family members**
   - [ ] Users can add a family member against their account
