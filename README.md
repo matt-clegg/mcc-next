@@ -1,75 +1,152 @@
-# Nuxt UI Minimal Starter
-
-Look at [Nuxt docs](https://nuxt.com/docs/getting-started/introduction) and [Nuxt UI docs](https://ui.nuxt.com) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- [ ] **User authentication**
+  - [ ] Users can register
+  - [ ] Users must comfirm their email address upon registration
+  - [ ] Users can login
+  - [ ] Users can request a password reset
+- [ ] **Family members**
+  - [ ] Users can add a family member against their account
+  - [ ] The number of users in one family is limited
+  - [ ] Users can request other users join their family
+  - [ ] Users can view which users are in their family
+  - [ ] Users can remove users from their family
+  - [ ] Users can leave a family they have been assigned to
+  - [ ] Users can only belong to a single family
+  - [ ] Users can delete junior accounts they manage
+  - [ ] Juniors users can be converted into regular users upon turning 18
+  - [ ] Parent user is notified of the junior user being converting to regular user
+  - [ ] Users must transfer or remove users from family is user decides to delete account
+- [ ] **User management**
+  - [ ] Admins can see a list of all users
+  - [ ] Admins can edit other user details
+  - [ ] Admins can create roles
+  - [ ] Admins can edit roles
+  - [ ] Admins can delete roles
+  - [ ] Admins can delete users
+  - [ ] Admins can assign user roles
+  - [ ] Users can edit their own details
+  - [ ] Users can upload a user avatar
+  - [ ] Users can remove their user avatar
+  - [ ] Users can download all of the data held by the site
+  - [ ] Users can delete their own account
+  - [ ] Users are promted evert x days to confirm their medical info it correct and up to date
+  - [ ] Inactive user accounts are deleted after x
+  - [ ] Inactive users do not include those paying for membership
+  - [ ] Inactive users are notified before account is deleted
+- [ ] **Memberships**
+  - [ ] Admins can create memberships
+  - [ ] Admins can view available memberships
+  - [ ] Admins can see which users are paying for each membership
+  - [ ] Admins can cancel memberships
+  - [ ] Memberships can be synced with stripe
+  - [ ] Users can view available memberships
+  - [ ] Users can pay for a membership
+  - [ ] Users can assign a membership to their family members
+  - [ ] Memberships can be priced based on user roles
+  - [ ] Users can cancel a membership
+- [ ] **Pages**
+  - [ ] Editors can create pages
+  - [ ] Editors can edit pages
+  - [ ] Editors can delete pages
+  - [ ] Editors can manage pages via the admin dashboard
+  - [ ] Editors can edit SEO info of page
+  - [ ] Users can view pages
+  - [ ] Redirects will be automatically created when a page is renamed
+  - [ ] Pages can be created as drafts
+- [ ] **News posts**
+  - [ ] Editors can create news posts
+  - [ ] Editors can edit news posts
+  - [ ] Editors can delete news posts
+  - [ ] Editors can manage news posts via the admin dashboard
+  - [ ] Users can view news posts
+  - [ ] Redirects will automatically be created when a news post is renamed
+  - [ ] News posts can be created as drafts
+  - [ ] News posts can be scheduled to be published
+  - [ ] Users can be notified via email when a news post is published for the first time
+- [ ] **Photo galleries**
+  - [ ] Specific users can create photo galleries
+  - [ ] Specific users can upload images to their own photo galleries
+  - [ ] Specific users can choose a featured image for each of their galleries
+  - [ ] Specific uers can edit the details of their own galleries
+  - [ ] Specific users can remove images from their own galleries
+  - [ ] Users an view a list of photo galleries
+  - [ ] Users can view the images in a photo gallery
+  - [ ] Logged in users can leave reactions to galleries/images
+  - [ ] Limit photo gallery creation to specific user roles
+  - [ ] Require manual review by admin/editor when a gallery is created
+  - [ ] Specific trusted users can create photo galleries without review
+  - [ ] Users can report images in galleries
+  - [ ] Admins/editors can edit galleries
+  - [ ] Admins/editors can remove galleries
+  - [ ] Admins can configure the size of galleries for specific user roles
+- [ ] **Notifications**
+  - [ ] Users can receive notifications
+  - [ ] Notifications will appear in the profile menu
+  - [ ] Notifications will appear with a dot indicator
+  - [ ] High priority notifications will alert the user on page load
+  - [ ] Users can receive notifications via email 
+- [ ] **Admin**
+  - [ ] Admins can view the admin dashboard
+  - [ ] Super admin role can assign admin role to other users
+  - [ ] Admins can edit email templates
+  - [ ] Admins can edit global site SEO info
+  - [ ] Admins can send an emails to specific user groups
+  - [ ] Admins can send en email to all users
+- [ ] **Newsletters**
+  - [ ] Admins/editors can create a newsletter
+  - [ ] Admins/editors can choose a file to attach to the newsletter
+  - [ ] Users can subscribe to the newsletter
+  - [ ] Users can unsubscribe from the newsletter
+  - [ ] Admins can see a list of subscribers
+  - [ ] Admins can add subscribers
+  - [ ] Admins can remove subscribers
+  - [ ] Users can see a list of previous newsletters
+- [ ] **Events**
+  - [ ] Specific users can create events
+    - [ ] Can create a single event
+    - [ ] Can create a multi-day event
+    - [ ] Can create a recurring event
+    - [ ] Can set a price on an event
+    - [ ] Can set a price based on user roles
+  - [ ] Specific users can choose an image for the event
+  - [ ] Specific users can choose to use a template when creating the event
+  - [ ] Admin users can configure event templates
+  - [ ] Specific users can edit their own events
+  - [ ] Specific users can cancel their own events
+  - [ ] Users can book onto events, if requirements are met
+  - [ ] Users can pay to book onto events, if requirements are met
+  - [ ] Users can book other family members onto events, if requirements are met
+  - [ ] Users must confirm medical/emergancy details are correct before booking
+  - [ ] Users booked onto an event are notified if the event is cancelled
+  - [ ] Users booked onto an event are notified if the date is changed
+  - [ ] Users can book onto an event as a guest account
+  - [ ] Require manual review by admin/editor when an event is created by specific users
+  - [ ] Admins/editors can reject or accept events that require review
+  - [ ] Specific trusted users can create events without review
+  - [ ] Admins/editors can edit events
+  - [ ] Admins/editors can cancel events
+  - [ ] Admins/editors can view all events in the admin dashboard
+  - [ ] Admins can configure T+Cs users must agree to before booking onto events
+  - [ ] Events can be created as drafts
+  - [ ] Users can be notified when an event with a specific type is published
+  - [ ] The user who creates the event will be assigned as the event leader
+  - [ ] Users can request to be made event leaders
+  - [ ] Multiple users can be event leaders
+  - [ ] Event leaders can view users booked onto event
+  - [ ] Event leaders can view medical info of users booked onto event
+  - [ ] Event leaders can view emergancy contact info of users booked onto event
+  - [ ] Event leaders can remove user bookings
+  - [ ] Event leaders can message users who have booked
+  - [ ] Users who have booked onto an event can message the event leaders
+  - [ ] Users can see list of events they are currently and have been booked onto
+  - [ ] Users can see list of events they have created
+  - [ ] Users can see list of events thay are leader on
+- [ ] **Calendar**
+  - [ ] Users can see events on a month calendar
+  - [ ] Users can change the month/year of the calendar
+  - [ ] Users can filter events by type
+  - [ ] Specific users can create events from the calendar
+- [ ] **Contact us**
+  - [ ] Users can fill out a contact us form
+  - [ ] Users can choose the subject from a dropdown
+  - [ ] Users can choose who the message is sent to via a dropdown
+  - [ ] Admins can configure the subject and target dropdowns 
